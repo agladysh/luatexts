@@ -2,8 +2,10 @@ TODO:
 -----
 
  -- Run splint all over the code.
- -- Run under valgrind
+ -- Run under valgrind.
  -- Write better tests.
- -- Add a luajit.ffi implementation
- -- Write Lua save()
- -- Write JS load()
+ -- Test JS code on more browsers.
+ -- Add a luajit.ffi implementation.
+ -- Write Lua save().
+ -- Write JS load().
+ -- Run benchmarks against Luabins, JSON, XML and Lua source.

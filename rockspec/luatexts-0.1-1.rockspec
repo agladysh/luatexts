@@ -18,10 +18,11 @@ build = {
    modules = {
       luatexts = {
          sources = {
-            "src/luatexts.c"
+            "src/c/luatexts.c",
+            "src/c/luainternals.c"
          },
          incdirs = {
-            "src/"
+            "src/c/"
          }
       }
    }

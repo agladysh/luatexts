@@ -1,0 +1,84 @@
+<html>
+<head>
+  <title>luatexts.js ad-hoc tests</title>
+</head>
+<body>
+
+<script type="text/javascript" src="luatexts.js"></script>
+<script type="text/javascript">
+try {
+  var data = LUATEXTS.save({
+      "obj": { },
+      "array": [
+          0.5, 1, 'null', null, 'undefined', undefined, true, false, { }, [ ]
+        ],
+      "utf": "ЭЭХ! Naïve?"
+    })
+
+  var expected = [
+    "1",
+    "T",
+    "0",
+    "3",
+    "S",
+    "3",
+    "obj",
+    "T",
+    "0",
+    "0",
+    "S",
+    "5",
+    "array",
+    "T",
+    "10",
+    "0",
+    "N",
+    "0.5",
+    "N",
+    "1",
+    "S",
+    "4",
+    "null",
+    "-",
+    "S",
+    "9",
+    "undefined",
+    "-",
+    "1",
+    "0",
+    "T",
+    "0",
+    "0",
+    "T",
+    "0",
+    "0",
+    "S",
+    "3",
+    "utf",
+    "S",
+    "15",
+    "ЭЭХ! Naïve?",
+    ].join("\n") + "\n";
+
+  if (data !== expected) {
+    document.write('<div style="color:red">Data mismatch</div>');
+  } else {
+    document.write('<div style="color:green; font-size:100px">OK</div>');
+  }
+
+  document.write(
+      '<hr>'
+    + '<table border="1">'
+    + '<tr><td>Actual</td><td>Expected</td></tr>'
+    + '<tr>'
+    + '<td><code><pre>' + data + '</code></pre></td>'
+    + '<td><code><pre>' + expected + '</code></pre></td>'
+    + '</tr>'
+    + '</body>'
+    );
+} catch (e) {
+  document.write('<div style="color:red"><pre>Exception ' + e + '</pre></div>');
+}
+</script>
+</body>
+</html>
