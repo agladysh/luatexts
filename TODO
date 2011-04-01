@@ -1,0 +1,9 @@
+TODO:
+-----
+
+ -- Run splint all over the code.
+ -- Run under valgrind
+ -- Write better tests.
+ -- Add a luajit.ffi implementation
+ -- Write Lua save()
+ -- Write JS load()
