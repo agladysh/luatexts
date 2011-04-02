@@ -1987,6 +1987,9 @@ end)()
         )
     )
 
+  print("===== END table tests", NAME, "=====")
+  print("===== BEGIN generative tests", NAME, "=====")
+
   do
     local constructors = { }
 
@@ -2100,7 +2103,7 @@ end)()
     end
   end
 
-  print("===== END table tests", NAME, "=====")
+  print("===== END generative tests", NAME, "=====")
 
 end
 
