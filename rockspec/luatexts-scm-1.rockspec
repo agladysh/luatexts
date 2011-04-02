@@ -24,6 +24,7 @@ build = {
          incdirs = {
             "src/c/"
          }
-      }
+      },
+      ["luatexts.lua"] = "src/lua/luatexts/lua.lua"
    }
 }
