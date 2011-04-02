@@ -7,4 +7,5 @@ TODO:
  -- Write luatexts.lua.load()
  -- Write JS load().
  -- Run benchmarks against Luabins, JSON, XML and Lua source.
+ -- Add generative and mutational tests for the UTF-8 data.
  -- Write better tests.
