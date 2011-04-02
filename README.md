@@ -27,7 +27,7 @@ Format
 ### Note on human-readability
 
 Note that while human-readability is one of design goals,
-nobody said that the actual data would be easy to read or write by hand.
+nobody claims that the actual data is easy to read or write by hand.
 
 You can do it, but you're better off using some API instead.
 
@@ -82,9 +82,9 @@ The luatexts format is defined as follows:
     <hash-key-N>\n
     <hash-value-N>
 
-Notes on table data type:
+### Notes on table data type:
 
-* nested tables are supported;
+* Nested tables are supported;
 * references in tables are not supported (saved as separate tables);
 * if table references itself, it can not be saved;
 * array/hash separation is optional, encoder can opt to use hash part only,
