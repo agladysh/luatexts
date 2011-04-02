@@ -2070,7 +2070,93 @@ end)()
       return r
     end
 
-    for i = 1, 1e3 do
+    local mutators = { }
+
+    local mutate = function(str, nesting)
+      return mutators[math.random(1, #mutators)](str, nesting)
+    end
+
+    -- truncate at end
+    mutators[#mutators + 1] = function(str)
+      local pos = math.random(1, #str)
+      return str:sub(1, pos)
+    end
+
+    -- truncate at beginning
+    mutators[#mutators + 1] = function(str)
+      local pos = math.random(1, #str)
+      return str:sub(-pos)
+    end
+
+    -- cut out the middle
+    mutators[#mutators + 1] = function(str)
+      local from = math.random(1, #str)
+      local to = math.random(from, #str)
+      return str:sub(1, from) .. str:sub(to)
+    end
+
+    -- swap two halves
+    mutators[#mutators + 1] = function(str)
+      local pos = math.random(1, #str)
+      return str:sub(pos + 1, #str) .. str:sub(1, pos)
+    end
+
+    -- swap two characters
+    mutators[#mutators + 1] = function(str)
+      local pa, pb = math.random(1, #str), math.random(1, #str)
+      local a, b = str:sub(pa, pa), str:sub(pb, pb)
+      return
+        str:sub(1, pa - 1) ..
+        a ..
+        str:sub(pa + 1, pb - 1) ..
+        b ..
+        str:sub(pb + 1, #str)
+    end
+
+    -- replace one character
+    mutators[#mutators + 1] = function(str)
+      local pos = math.random(1, #str)
+      return
+        str:sub(1, pos - 1) ..
+        string.char(math.random(0, 255)) ..
+        str:sub(pos + 1, #str)
+    end
+
+    -- increment one character
+    mutators[#mutators + 1] = function(str)
+      local pos = math.random(1, #str)
+      local b = str:byte(pos, pos) + 1
+      if b > 255 then
+        b = 0
+      end
+      return
+        str:sub(1, pos - 1) ..
+        string.char(b) ..
+        str:sub(pos + 1, #str)
+    end
+
+    -- decrement one character
+    mutators[#mutators + 1] = function(str)
+      local pos = math.random(1, #str)
+      local b = str:byte(pos, pos) - 1
+      if b < 0 then
+        b = 255
+      end
+      return
+        str:sub(1, pos - 1) ..
+        string.char(b) ..
+        str:sub(pos + 1, #str)
+    end
+
+    local mutated_ok = 0
+    local mutated_fail = 0
+
+    local num_steps = 1e4
+    for i = 1, num_steps do
+      if i % 500 == 0 --[[or (i >= 8732 and NL == "\n")--]] then
+        print("step", i, "of", num_steps)
+      end
+
       local n = math.random(0, 10)
       local tuple = { }
       for i = 1, n do
@@ -2100,15 +2186,42 @@ end)()
           n + 1, { true, unpack(tuple, 1, n) },
           luatexts.load(data)
         )
+
+      -- Now trying to mutate
+      -- (ignoring results, the point is not to crash)
+      local num_steps = 100
+      for j = 1, num_steps do
+        --[[
+        local dump = false
+        if i >= 8732 and j >= 12 and NL == "\n" then
+          print("mutation", i..":"..j, "of", num_steps)
+          dump = true
+        end
+        --]]
+        data = mutate(data)
+        --[[
+        if dump then
+          print("MUTATED", data)
+          print("GC size:", collectgarbage("count"))
+        end
+        --]]
+        local res = luatexts.load(data)
+        if res then
+          mutated_ok = mutated_ok + 1
+        else
+          mutated_fail = mutated_fail + 1
+        end
+
+        collectgarbage("step")
+      end
     end
+
+    print("mutated ok:", mutated_ok)
+    print("mutated fail:", mutated_fail)
   end
 
   print("===== END generative tests", NAME, "=====")
 
 end
-
--- TODO: mutation
-
-error("TODO: Write more tests!")
 
 print("OK")
