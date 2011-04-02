@@ -88,9 +88,9 @@ Mini-FAQ
 
 1. Why no `save()` in Lua and no `load()` in other language versions?
 
-Did not have time to write them yet. Do not need them personally,
-because I always try to feed the data to the consumer code
-in the format consumer understands best.
+    Did not have time to write them yet. Do not need them personally,
+    because I always try to feed the data to the consumer code
+    in the format consumer understands best.
 
 2. What if you need one of these missing functions?
 
