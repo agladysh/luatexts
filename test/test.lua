@@ -35,7 +35,97 @@ local split_by_char = import 'lua-nucleo/string.lua' { 'split_by_char' }
 
 local tset = import 'lua-nucleo/table-utils.lua' { 'tset' }
 
-for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
+local tpretty = import 'lua-nucleo/tpretty.lua' { 'tpretty' }
+
+--------------------------------------------------------------------------------
+
+-- TODO: Make a module out of this
+
+local luatexts_save
+do
+  local handlers = { }
+
+  local handle_value = function(cat, v, visited, buf)
+    local handler = handlers[type(v)]
+    if handler == nil then
+      return nil, "can't save `" .. type(v) .. "'"
+    end
+    return handler(cat, v, { }, buf)
+  end
+
+  handlers["nil"] = function(cat, v, visited, buf)
+    return cat "-" "\n"
+  end
+
+  handlers["boolean"] = function(cat, v, visited, buf)
+    return cat (v and "1" or "0") "\n"
+  end
+
+  handlers["number"] = function(cat, v, visited, buf)
+    return cat "N" "\n" (("%.54g"):format(v)) "\n"
+  end
+
+  handlers["string"] = function(cat, v, visited, buf)
+    return cat "S" "\n" (#v) "\n" (v) "\n"
+  end
+
+  handlers["table"] = function(cat, t, visited, buf)
+    if visited[t] then
+      -- TODO: This should be `return nil, err`, not `error()`!
+      error("circular table reference detected")
+    end
+    visited[t] = true
+
+    cat "T" "\n"
+
+    local array_size = #t
+    cat (array_size) "\n"
+
+    local hash_size_pos = #buf + 1
+    cat ("?") "\n"
+
+    for i = 1, array_size do
+      handle_value(cat, t[i], visited, buf)
+    end
+
+    local hash_size = 0
+    for k, v in pairs(t) do
+      if
+        type(k) ~= "number" or
+        k > array_size or k < 1 or -- integer key in hash part of the table
+        k % 1 ~= 0 -- non-integer key
+      then
+        hash_size = hash_size + 1
+        handle_value(cat, k, visited, buf)
+        handle_value(cat, v, visited, buf)
+      end
+    end
+
+    buf[hash_size_pos] = hash_size
+
+    visited[t] = nil
+
+    return cat
+  end
+
+  luatexts_save = function(...)
+    local nargs = select("#", ...)
+    local buf = { }
+    local function cat(s) buf[#buf + 1] = s; return cat end
+
+    cat (nargs) "\n"
+
+    for i = 1, nargs do
+      handle_value(cat, select(i, ...), { }, buf)
+    end
+
+    return table.concat(buf)
+  end
+end
+
+--------------------------------------------------------------------------------
+
+for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do --[===[
   print("===== BEGIN core tests", NAME, "=====")
 
   ensure_fails_with_substring(
@@ -1743,7 +1833,7 @@ end)() .. (function() return
 end)()
 
   ensure_error_with_substring(
-      "whole test data " .. NAME,
+      "whole utf-8 test data " .. NAME,
       "load failed: invalid utf-8 data",
       luatexts.load(
           '1' .. NL
@@ -1793,12 +1883,273 @@ end)()
       expected_errors
     )
 
-  print("===== END utf8 tests", NAME, "=====")
+  print("===== END utf8 tests", NAME, "=====") --]===]
+  print("===== BEGIN table tests", NAME, "=====")
+
+  ensure_returns(
+      "empty table " .. NAME,
+      2, { true, { } },
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+         .. '0' .. NL
+         .. '0' .. NL
+        )
+    )
+
+  ensure_returns(
+      "some data " .. NAME,
+      2,
+      {
+        true,
+        { false, 0.36978798469984341945604455759166739881038665771484375 }
+      },
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+         .. '2' .. NL
+         .. '0' .. NL
+         .. '0' .. NL
+         .. 'N' .. NL
+         .. '0.36978798469984341945604455759166739881038665771484375' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, no sizes, no nl " .. NAME,
+      "load failed: corrupt data, truncated",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, no sizes, one nl " .. NAME,
+      "load failed: corrupt data",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, no sizes, two nls " .. NAME,
+      "load failed: corrupt data",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. NL
+       .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, garbage array size " .. NAME,
+      "load failed: garbage before newline",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. 'a' .. NL
+       .. '0' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, garbage hash size " .. NAME,
+      "load failed: garbage before newline",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '0' .. NL
+       .. 'a' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, garbage after sizes " .. NAME,
+      "load failed: garbage before newline",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '1' .. NL
+       .. '0' .. NL
+       .. 'yada yada!' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, array size too large " .. NAME,
+      "load failed: corrupt data, truncated",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '2' .. NL
+       .. '0' .. NL
+       .. 'N' .. NL
+       .. '42' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, hash size too large " .. NAME,
+      "load failed: corrupt data, truncated",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '0' .. NL
+       .. '2' .. NL
+       .. 'N' .. NL
+       .. '42' .. NL
+       .. 'N' .. NL
+       .. '42' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, hash missing " .. NAME,
+      "load failed: corrupt data, truncated",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '1' .. NL
+       .. '1' .. NL
+       .. 'N' .. NL
+       .. '42' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, hash value missing " .. NAME,
+      "load failed: corrupt data, truncated",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '1' .. NL
+       .. '1' .. NL
+       .. 'N' .. NL
+       .. '42' .. NL
+       .. 'N' .. NL
+       .. '42' .. NL
+        )
+    )
+
+  do
+    local constructors = { }
+
+    local construct = function(nesting)
+      return constructors[math.random(1, #constructors)](nesting)
+    end
+
+    constructors[#constructors + 1] = function()
+      return nil
+    end
+
+    constructors[#constructors + 1] = function()
+      return false
+    end
+
+    constructors[#constructors + 1] = function()
+      return true
+    end
+
+    constructors[#constructors + 1] = function()
+      return 0
+    end
+
+    constructors[#constructors + 1] = function()
+      return 42
+    end
+
+    constructors[#constructors + 1] = function()
+      return 3.14
+    end
+
+    constructors[#constructors + 1] = function()
+      return 1/0
+    end
+
+    constructors[#constructors + 1] = function()
+      return math.random()
+    end
+
+    constructors[#constructors + 1] = function()
+      return math.random(-1000, 1000)
+    end
+
+    constructors[#constructors + 1] = function()
+      return ""
+    end
+
+    constructors[#constructors + 1] = function()
+      return "luatexts"
+    end
+
+    constructors[#constructors + 1] = function()
+      return { }
+    end
+
+    constructors[#constructors + 1] = function(nesting)
+      nesting = (nesting or 0) + 1
+
+      if nesting > 10 then
+        return { }
+      end
+
+      local r = { }
+
+      for i = 1, math.random(0, 10) do
+        r[i] = construct(nesting)
+      end
+
+      for i = 1, math.random(0, 10) do
+        local k = construct(nesting)
+        if k == nil then
+          k = "(nil)"
+        end
+
+        r[k] = construct(nesting)
+      end
+
+      return r
+    end
+
+    for i = 1, 1e3 do
+      local n = math.random(0, 10)
+      local tuple = { }
+      for i = 1, n do
+        tuple[i] = construct()
+      end
+
+      local data = ensure("save", luatexts_save(unpack(tuple, 1, n)))
+
+      print("dataset #" .. i .. ", " .. #data .. " bytes")
+      local c = 0
+      print("tuple: ", tpretty(tuple, '  ', 80))
+      print("data:", data)
+      print(
+          "0000 : " .. data:gsub(
+              "\n", function()
+                c = c + 1
+                return (" : CRLF\n%04d : "):format(c)
+              end
+            )
+        )
+
+      -- TODO: This does not cover utf-8. It should!
+      ensure_returns(
+          "load",
+          n + 1, { true, unpack(tuple, 1, n) },
+          luatexts.load(data)
+        )
+    end
+  end
+
+  print("===== END table tests", NAME, "=====")
+
 end
 
--- TODO: table
--- TODO: lua save/load implementation for tests
--- TODO: generated with all values
 -- TODO: mutation
 
 error("TODO: Write more tests!")
