@@ -36,6 +36,8 @@ local split_by_char = import 'lua-nucleo/string.lua' { 'split_by_char' }
 local tset = import 'lua-nucleo/table-utils.lua' { 'tset' }
 
 for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
+  print("===== BEGIN core tests", NAME, "=====")
+
   ensure_fails_with_substring(
       "load without args",
       function() return luatexts.load() end,
@@ -154,6 +156,9 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
         )
     )
 
+  print("===== END core tests", NAME, "=====")
+  print("===== BEGIN uint tests", NAME, "=====")
+
   ensure_returns(
       "zero uint " .. NAME,
       2, { true, 0 },
@@ -235,6 +240,9 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
          .. '2147483648' .. NL
         )
     )
+
+  print("===== END uint tests", NAME, "=====")
+  print("===== BEGIN number tests", NAME, "=====")
 
   ensure_returns(
       "number zero " .. NAME,
@@ -335,6 +343,9 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
          .. '1.1 yada yada'
         )
     )
+
+  print("===== END number tests", NAME, "=====")
+  print("===== BEGIN string tests", NAME, "=====")
 
   ensure_returns(
       "empty string " .. NAME,
@@ -455,6 +466,9 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
           )
       )
   end
+
+  print("===== END string tests", NAME, "=====")
+  print("===== BEGIN utf8 tests", NAME, "=====")
 
   ensure_returns(
       "empty utf8 " .. NAME,
@@ -1778,9 +1792,12 @@ end)()
       actual_errors,
       expected_errors
     )
+
+  print("===== END utf8 tests", NAME, "=====")
 end
 
--- TODO: table (borrow from LB)
+-- TODO: table
+-- TODO: lua save/load implementation for tests
 -- TODO: generated with all values
 -- TODO: mutation
 
