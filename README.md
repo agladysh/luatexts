@@ -12,6 +12,12 @@ Why not...
 * Luabins — is too binary for some languages
 * ...
 
+Inspired by
+-----------
+
+* Luabins
+* Redis transport protocol format
+
 Supported data types
 --------------------
 
@@ -198,11 +204,26 @@ Mini-FAQ
     * Write it yourself (it is easy!) and send me a pull request.
     * Ask me nicely.
 
-Inspired by
------------
+3. When to use luatexts and when luabins?
 
-* Luabins
-* Redis transport protocol format
+   * Use either of them when data consumer is Lua code.
+     Outside of that both formats are of limited usefulness,
+     since they follow Lua-specific data semantics closely.
+
+   * If data producer language does have luabins or luatexts bindings, use them.
+     If both are available, prefer luabins for speed,
+     luatexts for human-readability.
+
+  * If data producer language does not have existing bindings and it is C-aware,
+    use luabins, as it has Lua-less C serialization API. I would appreciate
+    if you would share your bindings code with the community,
+    but it is not mandatory.
+
+  * Otherwise, if data producer language is not C-aware, use luatexts,
+    as luatexts format writer it is more trivial to implement
+    (see JS API for an example). Again, I would greatly appreciate if you
+    will share your implementation with the community,
+    but it is not mandatory.
 
 API
 ---
