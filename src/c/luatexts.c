@@ -198,7 +198,7 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
   * It was a multi-byte character. Check if we have enough bytes unread.
   * Note that we've eaten one byte already.
   */
-  if (ltsLS_unread(ls) + 1 < expected_length)
+  if (ltsLS_unread(ls) + 1 < (unsigned char)expected_length)
   {
     ESPAM(("eatutf8char: multibyte character clipped\n"));
 
