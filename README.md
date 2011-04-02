@@ -19,30 +19,30 @@ Supported data types
 * `boolean`
 * `number`
 * `string`
-* `table` (non-recursive)
+* `table` (no references)
 
 Format
 ------
 
     <unsigned-integer-data:tuple-size>\n<type1>\n<data1>\n...<typeN>\n<dataN>\n
 
-**`\n` here and below may be either `LF` or `CRLF`**
+*`\n` here and below may be either `LF` or `CRLF`*
 
 * Nil
   * type: `-`
-  * data: **(none)**
+  * data: *(none)*
 * Boolean-false
   * type: `0`
-  * data: **(none)**
+  * data: *(none)*
 * Boolean-true
   * type: `1`
-  * data: **(none)**
+  * data: *(none)*
 * Number-double
   * type: `N`
-  * data: **plain string representation, readable by strtod**
+  * data: *plain string representation, readable by `strtod`*
 * Number-unsigned-integer
   * type: `U`
-  * data: **plain string representation, readable by x86 strtoul**
+  * data: *plain string representation, readable by `strtoul`*
 * String-any
   * type: `S`
   * data:
@@ -94,9 +94,9 @@ in the format consumer understands best.
 
 2. What if you need one of these missing functions?
 
-* Use luabins or other feature-complete serialization library.
-* Write it yourself (it is easy!) and send me a pull request.
-* Ask me nicely.
+  * Use luabins or other feature-complete serialization library.
+  * Write it yourself (it is easy!) and send me a pull request.
+  * Ask me nicely.
 
 Inspired by
 -----------
