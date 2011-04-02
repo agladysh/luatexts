@@ -6,6 +6,6 @@ TODO:
  -- Write better tests.
  -- Test JS code on more browsers.
  -- Add a luajit.ffi implementation.
- -- Write Lua save().
+ -- luatexts.lua.save() should not throw error() or use assert().
  -- Write JS load().
  -- Run benchmarks against Luabins, JSON, XML and Lua source.
