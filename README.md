@@ -52,24 +52,24 @@ The luatexts format is defined as follows:
 * Nil
   * type: `-`
   * data: *(none)*
-* Boolean-false
+* Boolean (false)
   * type: `0`
   * data: *(none)*
-* Boolean-true
+* Boolean (true)
   * type: `1`
   * data: *(none)*
-* Number-double
+* Number (double)
   * type: `N`
   * data: *plain string representation, readable by `strtod`*
-* Number-unsigned-integer
+* Number (unsigned integer)
   * type: `U`
   * data: *plain string representation, readable by `strtoul`*
-* String-any
+* String (regular)
   * type: `S`
   * data:
         <unsigned-data:size-in-bytes>\n
         <string-data, "binary" stuff supported>
-* String-UTF-8
+* String (UTF-8)
   * type: `8`
   * data:
         <unsigned-data:length-in-characters>\n
@@ -182,6 +182,24 @@ In luatexts:
 
 As in Lua, it is not defined which one of values would end up
 in the loaded table.
+
+### Regular strings vs. UTF-8 strings
+
+Regular strings are treated just as a blob of bytes. Their size
+is specified in *bytes*, and reader implementation never looks
+inside the string data. You can pass any data, including something binary
+as a regular string. (Obviously, you can also pass UTF-8 strings
+as regular strings.)
+
+UTF-8 strings are honestly treated as UTF-8 data. Their size is
+specified in *characters*, and reader implementation does read UTF-8
+characters one-by-one, doing the full validation. You can only pass valid
+UTF-8 text data as an UTF-8 string.
+
+Apart from validation, in Lua implementation it does not matter much,
+if you used regular string or UTF-8 string type to represent your data.
+But UTF-8 strings are handy if you compose your data payload from the
+language that does not know anything about bytes.
 
 Security notes
 --------------
