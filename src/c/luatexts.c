@@ -565,15 +565,14 @@ static int load_table(lua_State * L, lts_LoadState * ls)
   {
     total_size = array_size + hash_size;
 
-    /*
-    * Security note: not checking for unread buffer size underflow.
-    * Motivation: will fail at read time, so why bother?
-    */
-
     if (
         array_size < 0 || array_size > MAXASIZE ||
         hash_size < 0  ||
-        (hash_size > 0 && ceillog2((unsigned int)hash_size) > MAXBITS)
+        (hash_size > 0 && ceillog2((unsigned int)hash_size) > MAXBITS) ||
+        /*
+        * Simplification: Assuming minimum value size is one byte.
+        */
+        ltsLS_unread(ls) < (array_size + hash_size * 2)
       )
     {
       ESPAM(("load_table: too huge\n"));
