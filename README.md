@@ -214,16 +214,16 @@ Mini-FAQ
      If both are available, prefer luabins for speed,
      luatexts for human-readability.
 
-  * If data producer language does not have existing bindings and it is C-aware,
-    use luabins, as it has Lua-less C serialization API. I would appreciate
-    if you would share your bindings code with the community,
-    but it is not mandatory.
+   * If data producer language does not have existing bindings
+     and it is  C-aware, use luabins, as it has Lua-less C serialization API.
+     I would appreciate if you would share your bindings code with
+     the community, but it is not mandatory.
 
-  * Otherwise, if data producer language is not C-aware, use luatexts,
-    as luatexts format writer it is more trivial to implement
-    (see JS API for an example). Again, I would greatly appreciate if you
-    will share your implementation with the community,
-    but it is not mandatory.
+   * Otherwise, if data producer language is not C-aware, use luatexts,
+     as luatexts format writer it is more trivial to implement
+     (see JS API for an example). Again, I would greatly appreciate if you
+     will share your implementation with the community,
+     but it is not mandatory.
 
 API
 ---
