@@ -20,6 +20,7 @@ extern "C" {
 
 /* Really spammy SPAM */
 #if 0
+  #include <ctype.h>
   #define XSPAM(a) printf a
 #else
   #define XSPAM(a) (void)0
@@ -27,6 +28,7 @@ extern "C" {
 
 /* Really spammy error-message SPAM */
 #if 0
+  #include <ctype.h>
   #define XESPAM(a) printf a
 #else
   #define XESPAM(a) (void)0
@@ -34,6 +36,7 @@ extern "C" {
 
 /* Regular SPAM */
 #if 0
+  #include <ctype.h>
   #define SPAM(a) printf a
 #else
   #define SPAM(a) (void)0
@@ -41,6 +44,7 @@ extern "C" {
 
 /* Error-message SPAM */
 #if 0
+  #include <ctype.h>
   #define ESPAM(a) printf a
 #else
   #define ESPAM(a) (void)0
