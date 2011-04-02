@@ -148,6 +148,35 @@ The luatexts format is defined as follows:
         N\n  ; Value: -- Number --
         42\n ; Value: Number value
 
+### Array vs. hash parts of a table
+
+Note that, as far as Lua implementation is concerned,
+it does not matter much if you put a value in array part or in hash part
+of a table in your luatexts data.
+
+As in Lua table constructor, you can even put a value for the same key both
+in array and in hash part of a table:
+
+In Lua:
+
+      return { 3.14, [1] = 2.71 }
+
+In luatexts:
+
+      1\n    ; == Tuple size ==
+      T\n    ; -- Table --
+      1\n    ; Array part size
+      1\n    ; Hash part size
+      N\n    ; [1]: -- Number --
+      3.14\n ; [1]: Number value
+      N\n    ; Key: -- Number --
+      1\n    ; Key: Number value
+      N\n    ; Value: -- Number --
+      2.71\n ; Value: Number value
+
+As in Lua, it is not defined which one of values would end up
+in the loaded table.
+
 Security notes
 --------------
 
