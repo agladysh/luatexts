@@ -54,6 +54,8 @@ The luatexts format is defined as follows:
 
 *`\n` here and below may be either `LF` or `CRLF`*
 
+### Types
+
 * Nil
   * type: `-`
   * data: *(none)*
