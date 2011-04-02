@@ -636,6 +636,9 @@ static int load_value(lua_State * L, lts_LoadState * ls)
   if (result == LUATEXTS_ESUCCESS)
   {
     XSPAM(("VALUE TYPE '%c'\n", type[0]));
+
+    luaL_checkstack(L, 1, "load-value");
+
     switch (type[0])
     {
       case LUATEXTS_CNIL:
@@ -803,6 +806,8 @@ static int luatexts_load(
     XSPAM(("LOAD TUPLE error %d\n", result));
     lua_settop(L, base); /* Discard intermediate results */
 
+    luaL_checkstack(L, 1, "load-err");
+
     switch (result)
     {
       case LUATEXTS_EBADSIZE:
@@ -853,11 +858,13 @@ static int lload(lua_State * L)
   size_t tuple_size = 0;
   int result = 0;
 
+  luaL_checkstack(L, 1, "lload");
   lua_pushboolean(L, 1);
 
   result = luatexts_load(L, buf, len, &tuple_size);
   if (result != LUATEXTS_ESUCCESS)
   {
+    luaL_checkstack(L, 1, "lload-err");
     lua_pushnil(L);
     lua_replace(L, -3); /* Replace pre-pushed true with nil */
     return 2; /* Error message already on stack */
