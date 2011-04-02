@@ -5,8 +5,8 @@
 -- See license in the file named COPYRIGHT
 --------------------------------------------------------------------------------
 
-local error, pairs, select, type
-    = error, pairs, select, type
+local assert, error, pairs, select, type
+    = assert, error, pairs, select, type
 
 local table_concat
     = table.concat
@@ -68,8 +68,9 @@ do
         k % 1 ~= 0 -- non-integer key
       then
         hash_size = hash_size + 1
-        handle_value(cat, k, visited, buf)
-        handle_value(cat, v, visited, buf)
+        -- TODO: return nil, err on failure instead of asserting
+        assert(handle_value(cat, k, visited, buf))
+        assert(handle_value(cat, v, visited, buf))
       end
     end
 
