@@ -24,6 +24,21 @@ Supported data types
 Format
 ------
 
+### Note on human-readability
+
+Note that while human-readability is one of design goals,
+nobody said that the actual data would be easy to read or write by hand.
+
+You can do it, but you're better off using some API instead.
+
+If you often need to work with luatexts data manually for purposes
+other than debugging, consider using something more friendly like
+JSON or XML or sandboxed Lua code.
+
+### Definition
+
+The luatexts format is defined as follows:
+
     <unsigned-integer-data:tuple-size>\n<type1>\n<data1>\n...<typeN>\n<dataN>\n
 
 *`\n` here and below may be either `LF` or `CRLF`*
@@ -77,6 +92,62 @@ Notes on table data type:
 * array part may include `nil` values (hash values may be `nil` as well);
 * table keys may not be `NaN` or `nil`.
 
+### Examples
+
+*Everything on the line after `\n` is comments, do not put them into your data.*
+
+* Zero-sized tuple
+
+  In Lua:
+
+        return
+
+  In luatexts:
+
+        0\n ; == Tuple size ==
+
+* Mutiple values in tuple
+
+  In Lua:
+
+        return 42, "Hello, world!\n", true
+
+  In luatexts:
+
+        3\n               ; == Tuple size ==
+        N\n               ; -- Number --
+        42\n              ; Number value
+        S\n               ; -- String --
+        13\n              ; String size in bytes
+        Hello, world!\n\n ; String data
+        1\n               ; -- Boolean true --
+
+* Simple table
+
+  In Lua:
+
+        return { 42 }
+
+  In luatexts:
+
+        1\n  ; == Tuple size ==
+        T\n  ; -- Table --
+        1\n  ; Array part size
+        0\n  ; Hash part size
+        N\n  ; [1]: -- Number --
+        42\n ; [1]: Number value
+
+  In luatexts (equivalent):
+
+        1\n  ; == Tuple size ==
+        T\n  ; -- Table --
+        0\n  ; Array part size
+        1\n  ; Hash part size
+        N\n  ; Key: -- Number --
+        1\n  ; Key: Number value
+        N\n  ; Value: -- Number --
+        42\n ; Value: Number value
+
 Security notes
 --------------
 
@@ -89,7 +160,7 @@ Mini-FAQ
 1. Why no `save()` in Lua and no `load()` in other language versions?
 
     Did not have time to write them yet. Do not need them personally,
-    because I always try to feed the data to the consumer code
+    because I always try to feed the data to the consumer
     in the format consumer understands best.
 
 2. What if you need one of these missing functions?
