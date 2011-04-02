@@ -45,7 +45,12 @@ JSON or XML or sandboxed Lua code.
 
 The luatexts format is defined as follows:
 
-    <unsigned-integer-data:tuple-size>\n<type1>\n<data1>\n...<typeN>\n<dataN>\n
+    <unsigned-integer-data:tuple-size>\n
+    <type1>\n
+    <data1>\n
+    ...
+    <typeN>\n
+    <dataN>\n
 
 *`\n` here and below may be either `LF` or `CRLF`*
 
