@@ -94,9 +94,9 @@ in the format consumer understands best.
 
 2. What if you need one of these missing functions?
 
-  * Use luabins or other feature-complete serialization library.
-  * Write it yourself (it is easy!) and send me a pull request.
-  * Ask me nicely.
+    * Use luabins or other feature-complete serialization library.
+    * Write it yourself (it is easy!) and send me a pull request.
+    * Ask me nicely.
 
 Inspired by
 -----------
