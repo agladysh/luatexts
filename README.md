@@ -246,12 +246,32 @@ Mini-FAQ
 API
 ---
 
-### Lua
+### Lua (C API)
+
+    local luatexts = require 'luatexts'
 
 * `luatexts.load(data : string) : true, ... / nil, err`
 
   Returns unserialized data tuple (as multiple return values).
   Tuples may be of zero values.
+
+### Lua (Plain)
+
+This module is primarily used in tests. It may be considered as a reference
+implementation of luatexts data serializer.
+
+    local luatexts_lua = require 'luatexts.lua'
+
+* `luatexts_lua.save(...) : string / nil, err`
+
+  Serializes given data tuple. Returns `nil, err` on error.
+
+  Issues:
+
+  * Throws `error()` on self-referencing tables.
+  * Asserts if detects non-serializable value inside a table.
+
+  (Both issues to be fixed in later revisions.)
 
 ### JavaScript
 
