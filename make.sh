@@ -6,7 +6,7 @@ if ([ -z "${CLOSURE}" ]); then
   CLOSURE="$(luarocks show --rock-dir pk-core-js.google-closure-compiler)"
 fi
 
-echo "----> Macking rock"
+echo "----> Making rock"
 sudo luarocks make rockspec/luatexts-scm-1.rockspec
 
 HEADER='// LUATEXTS JavaScript module (v. 0.1)
