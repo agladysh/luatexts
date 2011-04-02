@@ -15,8 +15,8 @@ Why not...
 Inspired by
 -----------
 
-* Luabins
-* Redis transport protocol format
+* Luabins: http://github.com/agladysh/luabins/
+* Redis transport protocol format: http://redis.io/topics/protocol
 
 Supported data types
 --------------------
