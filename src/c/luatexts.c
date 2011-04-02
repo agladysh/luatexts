@@ -18,16 +18,25 @@ extern "C" {
 }
 #endif
 
+/* Really spammy SPAM */
 #if 0
   #define XSPAM(a) printf a
 #else
   #define XSPAM(a) (void)0
 #endif
 
-#if 0
+/* Regular SPAM */
+#if 1
   #define SPAM(a) printf a
 #else
   #define SPAM(a) (void)0
+#endif
+
+/* Error-message SPAM */
+#if 0
+  #define ESPAM(a) printf a
+#else
+  #define ESPAM(a) (void)0
 #endif
 
 #define LUATEXTS_VERSION     "luatexts 0.1"
@@ -105,7 +114,11 @@ static const unsigned char * ltsLS_eat(lts_LoadState * ls, size_t len)
   return result;
 }
 
-/* Based on this: http://en.wikipedia.org/wiki/UTF-8#Codepage_layout */
+/*
+* UTF-8 handling implemented based on information here:
+* http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+*/
+
 static const signed char utf8_char_len[256] =
 {
    1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
@@ -120,15 +133,10 @@ static const signed char utf8_char_len[256] =
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-   0,  0,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
+   2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
    2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
    3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,
-   4,  4,  4,  4,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
-};
-
-static const unsigned char utf8_min_values[] =
-{
-  0, 0xC1, 0xE1, 0xF1
+   4,  4,  4,  4,  4,  4,  4,  4,  5,  5,  5,  5,  6,  6,  0,  0
 };
 
 /*
@@ -137,115 +145,234 @@ static const unsigned char utf8_min_values[] =
 */
 static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
 {
-  signed char expected_len = 0;
-  int i = 0;
   unsigned char b = 0;
+  signed char expected_length = 0;
+  int i = 0;
   const unsigned char * origin = ls->pos;
-  int had_data = 0;
 
-  SPAM(("UTF8 BEGIN CHAR\n"));
-
+  /* Check if we have any data in the buffer */
   if (!ltsLS_good(ls) || ltsLS_unread(ls) < 1)
   {
+    ESPAM(("eatutf8char: no buffer to start with\n"));
     ls->unread = 0;
     ls->pos = NULL;
-    SPAM(("UTF8 CLIPPED\n"));
-    return LUATEXTS_ECLIPPED; /* Run out of buffer */
+    return LUATEXTS_ECLIPPED;
   }
 
-  /* First byte must be a start one */
+  /* We have at least one byte in the buffer, let's check it out. */
   b = *ls->pos;
 
-  /* We've read a single byte now, no matter what */
+  /* We did just eat a byte, no matter what happens next. */
   ++ls->pos;
   --ls->unread;
 
-  /* Look up number of bytes in character */
-  expected_len = utf8_char_len[b];
-  if (expected_len < 1)
+  /* Get an expected length of a character. */
+  expected_length = utf8_char_len[b];
+  XSPAM((
+      "eatutf8char: first byte 0x%X (%d) expected length: %d\n",
+      b, b, expected_length
+    ));
+
+  /* Check if it was a valid first byte. */
+  if (expected_length < 1)
   {
-    /* Bad start byte, or unexpected continuation byte */
+    ESPAM(("eatutf8char: invalid start byte 0x%X (%d)\n", b, b));
+
     ls->unread = 0;
     ls->pos = NULL;
-    SPAM(("UTF8 bsboucb 0x%X (%d)\n", b, b));
+
     return LUATEXTS_EBADUTF8;
   }
 
-  /* So, we've got a correct start byte. */
-  SPAM(("UTF8 BYTE 0x%X (%d) START LEN %d\n", b, b, expected_len));
-
-  /* Maybe it is a single-byte character? */
-  if (expected_len == 1)
+  /* If it was a single-byte ASCII character, return right away. */
+  if (expected_length == 1)
   {
-    SPAM(("UTF8 END CHAR ASCII 0x%X (%d)\n", b, b));
+    XSPAM(("eatutf8char: ascii 0x%X (%d)\n", b, b));
 
-    *len_bytes += expected_len;
+    *len_bytes += expected_length;
+
     return LUATEXTS_ESUCCESS;
   }
 
   /*
-  * It is a multi-byte character, let's check if we have all bytes we need.
-  * Note that we did read one byte above.
+  * It was a multi-byte character. Check if we have enough bytes unread.
+  * Note that we've eaten one byte already.
   */
-  if (ltsLS_unread(ls) + 1 < expected_len)
+  if (ltsLS_unread(ls) + 1 < expected_length)
   {
-    /*
-    * Not enough bytes in buffer to read whole character.
-    */
+    ESPAM(("eatutf8char: multibyte character clipped\n"));
+
     ls->unread = 0;
     ls->pos = NULL;
-    SPAM(("UTF8 clipped\n"));
-    return LUATEXTS_ECLIPPED;
+
+    return LUATEXTS_ECLIPPED; /* Assuming it is buffer's fault. */
   }
 
-  had_data = (b > utf8_min_values[expected_len - 1]);
-  SPAM(("UTF8 INITAL HD %d > %d = %d\n", b, utf8_min_values[expected_len - 1], had_data));
-
-  /*
-  * We do have enough bytes in buffer.
-  * Let's look ahead and check that all of them are continuation ones.
-  */
-  for (i = 1; i < expected_len; ++i)
+  /* Let's eat the rest of characters */
+  for (i = 1; i < expected_length; ++i)
   {
     b = *ls->pos;
 
-    /* We've read a single byte now, no matter what. */
+    /* We did just eat a byte, no matter what happens next. */
     ++ls->pos;
     --ls->unread;
 
-    if (b != 0x80)
-    {
-      had_data = 1;
-    }
-    else if (!had_data)
-    {
-      if (expected_len != 2)
-      {
-        /* Not a shortest form. Broken UTF-8. */
-        ls->unread = 0;
-        ls->pos = NULL;
-        SPAM(("UTF8 not a shortest form 0x%X (%d)\n", b, b));
-        return LUATEXTS_EBADUTF8;
-      }
-    }
+    XSPAM(("eatutf8char: cont 0x%X (%d)\n", b, b));
 
+    /* Check if it is a continuation byte */
     if (utf8_char_len[b] != -1)
     {
-      /* Not a continuation byte. Broken UTF-8. */
+      ESPAM(("eatutf8char: invalid continuation byte 0x%X (%d)\n", b, b));
+
       ls->unread = 0;
       ls->pos = NULL;
-      SPAM(("UTF8 nacbbu8 0x%X (%d)\n", b, b));
+
       return LUATEXTS_EBADUTF8;
     }
-
-    SPAM(("UTF8 BYTE 0x%X (%d) CONT\n", b, b));
   }
 
-  /* Phew. Eaten whole character successfully. */
+  /* All bytes are correct, let's check out for overlong forms */
+  if (
+      expected_length == 2 && (
+          (origin[0] & 0xFE) == 0xC0
+        )
+    )
+  {
+    ESPAM((
+        "eatutf8char: overlong form 2 0x%X 0x%X (%d %d)\n",
+        origin[0], origin[0],
+        origin[1], origin[1]
+      ));
 
-  SPAM(("UTF8 END CHAR %d\n", expected_len));
+    ls->unread = 0;
+    ls->pos = NULL;
 
-  *len_bytes += expected_len;
+    return LUATEXTS_EBADUTF8;
+  }
+  else if (
+      expected_length == 3 && (
+          origin[0] == 0xE0
+            && (origin[1] & 0xE0) == 0x80
+        )
+    )
+  {
+    ESPAM((
+        "eatutf8char: overlong form 3 0x%X 0x%X 0x%X (%d %d %d)\n",
+        origin[0], origin[0],
+        origin[1], origin[1],
+        origin[2], origin[2]
+      ));
+
+    ls->unread = 0;
+    ls->pos = NULL;
+
+    return LUATEXTS_EBADUTF8;
+  }
+  else if (
+      expected_length == 4 && (
+          origin[0] == 0xF0
+            && (origin[1] & 0xF0) == 0x80
+        )
+    )
+  {
+    ESPAM((
+        "eatutf8char: overlong form 4 0x%X 0x%X 0x%X 0x%X (%d %d %d %d)\n",
+        origin[0], origin[0],
+        origin[1], origin[1],
+        origin[2], origin[2],
+        origin[3], origin[3]
+      ));
+
+    ls->unread = 0;
+    ls->pos = NULL;
+
+    return LUATEXTS_EBADUTF8;
+  }
+  else if (
+      expected_length == 5 && (
+          origin[0] == 0xF8
+            && (origin[1] & 0xF8) == 0x80
+        )
+    )
+  {
+    ESPAM((
+        "eatutf8char: overlong form 5"
+        " 0x%X 0x%X 0x%X 0x%X 0x%X (%d %d %d %d %d)\n",
+        origin[0], origin[0],
+        origin[1], origin[1],
+        origin[2], origin[2],
+        origin[3], origin[3],
+        origin[4], origin[4]
+      ));
+
+    ls->unread = 0;
+    ls->pos = NULL;
+
+    return LUATEXTS_EBADUTF8;
+  }
+  else if (
+      expected_length == 6 && (
+          origin[0] == 0xFC
+            && (origin[1] & 0xFC) == 0x80
+        )
+    )
+  {
+    ESPAM((
+        "eatutf8char: overlong form 6"
+        " 0x%X 0x%X 0x%X 0x%X 0x%X 0x%X (%d %d %d %d %d %d)\n",
+        origin[0], origin[0],
+        origin[1], origin[1],
+        origin[2], origin[2],
+        origin[3], origin[3],
+        origin[4], origin[4],
+        origin[5], origin[5]
+      ));
+
+    ls->unread = 0;
+    ls->pos = NULL;
+
+    return LUATEXTS_EBADUTF8;
+  }
+
+  /* No overlongs, check for surrogates. */
+
+  if (
+      expected_length == 3 && (
+          origin[0] == 0xED
+            && (origin[1] & 0xE0) == 0xA0
+        )
+    )
+  {
+    ESPAM((
+        "eatutf8char: surrogate form 3 0x%X 0x%X 0x%X (%d %d %d)\n",
+        origin[0], origin[0],
+        origin[1], origin[1],
+        origin[2], origin[2]
+      ));
+
+    ls->unread = 0;
+    ls->pos = NULL;
+
+    return LUATEXTS_EBADUTF8;
+  }
+
+  /*
+  * Note: Not checking for U+FFFE or U+FFFF.
+  *
+  * Chapter 3 of version 3.2 of the Unicode standard, Paragraph C5 says
+  * "A process shall not interpret either U+FFFE or U+FFFF as an abstract
+  * character", but table 3.1B includes them among
+  * the "Legal UTF-8 Byte Sequences".
+  *
+  * We opt to pass them through.
+  */
+
+  /* Phew. All done, the UTF-8 character is valid. */
+
+  XSPAM(("eatutf8char: read one char successfully\n"));
+
+  *len_bytes += expected_length;
+
   return LUATEXTS_ESUCCESS;
 }
 

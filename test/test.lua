@@ -511,7 +511,6 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
         )
     )
 
-  print("XXX !!!")
   ensure_returns(
       "Встроенный\\0Ноль utf8 " .. NAME,
       2, { true, "Встроенный\0Ноль" },
@@ -1740,36 +1739,34 @@ end)()
         )
     )
 
+  -- Lines with bad UTF-8 in the above document.
   local expected_errors =
   {
-    -- TODO: Tests document dictate that these numbers should be allowed,
-    --       but Wikipedia says no...
-    75, 76, 83, 84, 85,
+    102,  103,  105,  106,  107,  108,  109,  110,  114,  115,
+    116,  117,  124,  125,  130,  135,  140,  145,  153,  154,
+    155,  156,  157,  158,  159,  160,  161,  162,  169,  175,
+    176,  177,  207,  208,  209,  210,  211,  220,  221,  222,
+    223,  224,  232,  233,  234,  235,  236,  247,  248,  249,
+    250,  251,  252,  253,  257,  258,  259,  260,  261,  262,
+    263,  264,
     --
-    102,	103,	105,	106,	107,	108,	109,	110,	114,	115,
-    116,	117,	124,	125,	130,	135,	140,	145,	153,	154,
-    155,	156,	157,	158,	159,	160,	161,	162,	169,	175,
-    176,	177,	207,	208,	209,	210,	211,	220,	221,	222,
-    223,	224,	232,	233,	234,	235,	236,	247,	248,	249,
-    250,	251,	252,	253,	257,	258,	259,	260,	261,	262,
-    263,	264,	268,	269
+    -- These are contradictory U+FFFE and U+FFFF.
+    -- We opt to pass them through. (See also line 82.)
+    -- 268,  269
   }
 
   local lines = split_by_char(TEST_DATA, "\n")
   local actual_errors = { }
   for i = 1, #lines do
-    print("YYY LOADING", i)
     local res, err = luatexts.load(
         '1' .. NL
      .. '8' .. NL
        .. (#lines[i] < 79 and #lines[i] or 79) .. NL
        .. lines[i] .. NL
       )
-    print("YYY DONE LOADING", i)
     if res then
       ensure_equals("loaded", err, lines[i])
     else
-      print("XXX", i)
       ensure_equals(
           "correct error " .. i, err, "load failed: invalid utf-8 data"
         )
