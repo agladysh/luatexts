@@ -1950,6 +1950,43 @@ end)()
         )
     )
 
+  ensure_error_with_substring(
+      "table, huge array size " .. NAME,
+      "load failed: value too huge",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '65234375' .. NL
+       .. '0' .. NL
+       .. '-' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, huge hash size " .. NAME,
+      "load failed: value too huge",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '0' .. NL
+       .. '65234375' .. NL
+       .. '1' .. NL
+       .. '-' .. NL
+        )
+    )
+
+  ensure_error_with_substring(
+      "table, huge array and hash size " .. NAME,
+      "load failed: value too huge",
+      luatexts.load(
+          '1' .. NL
+       .. 'T' .. NL
+       .. '65234375' .. NL
+       .. '65234375' .. NL
+       .. '-' .. NL
+        )
+    )
+
   do
     local constructors = { }
 
