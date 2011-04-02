@@ -1,7 +1,5 @@
 -- TODO: Scrap these hacks and write a proper test suite.
 
-package.path = "src/lua/?.lua;" .. package.path
-
 pcall(require, 'luarocks.require')
 require 'lua-nucleo.module'
 require 'lua-nucleo.strict'
