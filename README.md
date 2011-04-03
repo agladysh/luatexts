@@ -288,16 +288,16 @@ implementation of luatexts data serializer.
   If does not know how to serialize value, throws `Exception`.
   Call without arguments produces a zero-sized tuple.
 
-Type conversion rules for JS->Lua:
+Type conversion rules for JS --> Lua:
 
 * `undefined` --> `nil`
-* `null`: --> `nil`
-* `boolean`: `boolean`
-* `number`: `number`
-* `string`: `string` (assuming UTF-8 encoding)
-* `object`: `table` with hash part
-* `array`: `table` with array part (implicitly saved as 1-based)
-* `function`: not supported
+* `null` --> `nil`
+* `boolean` --> `boolean`
+* `number` --> `number`
+* `string` --> `string` (assuming UTF-8 encoding)
+* `object` --> `table` with hash part
+* `array` --> `table` with array part (implicitly saved as 1-based)
+* `function` --> not supported
 
 Nested objects / arrays are supported.
 
