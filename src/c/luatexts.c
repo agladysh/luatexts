@@ -50,7 +50,7 @@ extern "C" {
   #define ESPAM(a) (void)0
 #endif
 
-#define LUATEXTS_VERSION     "luatexts 0.1"
+#define LUATEXTS_VERSION     "luatexts 0.1.1"
 #define LUATEXTS_COPYRIGHT   "Copyright (C) 2011, luatexts authors"
 #define LUATEXTS_DESCRIPTION \
     "Trivial Lua human-readable binary-safe serialization library"
