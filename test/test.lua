@@ -1761,18 +1761,31 @@ end)()
   -- Lines with bad UTF-8 in the above document.
   local expected_errors =
   {
+    --
+    -- Original list of lines with bad UTF-8 sequences
+    --
     102,  103,  105,  106,  107,  108,  109,  110,  114,  115,
     116,  117,  124,  125,  130,  135,  140,  145,  153,  154,
     155,  156,  157,  158,  159,  160,  161,  162,  169,  175,
     176,  177,  207,  208,  209,  210,  211,  220,  221,  222,
     223,  224,  232,  233,  234,  235,  236,  247,  248,  249,
     250,  251,  252,  253,  257,  258,  259,  260,  261,  262,
-    263,  264,
+    263,  264,  268,  269;
     --
-    -- These are contradictory U+FFFE and U+FFFF.
-    -- We opt to pass them through. (See also line 82.)
-    -- 268,  269
+    -- Additional bad lines
+    -- TODO: Add more tests to compensate for these
+    --       (as some of this checks are for boundary conditions).
+    --
+    75; -- 5-byte sequence is illegal
+    76; -- 6-byte sequence is illegal
+    82; -- BOM non-character sequence is legitimately rejected by our reader
+    83; -- First byte 0xF7 (247) may not occur anywhere in valid UTF-8 byte seq.
+    84; -- 5-byte sequence is illegal
+    85; -- 6-byte sequence is illegal
+    93; -- Overlong form
   }
+
+  table.sort(expected_errors)
 
   local lines = split_by_char(TEST_DATA, "\n")
   local actual_errors = { }
