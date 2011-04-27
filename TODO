@@ -1,6 +1,7 @@
 TODO:
 -----
 
+ -- Add an alternative key-value size-less table format (ending by nil-nil pair).
  -- Run splint all over the code.
  -- Add a luajit.ffi implementation.
  -- luatexts.lua.save() should not throw error() or use assert().
