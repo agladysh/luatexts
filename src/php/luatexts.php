@@ -38,7 +38,7 @@ class Luatexts{
       $handler = 'save_'.$type;
 
       if (!in_array($type, self::$supported_types) || !is_callable('Luatexts', $handler)){
-        throw new Exception("luatexts does not support values of type " . $type);
+        throw new Exception("luatexts does not support values of type \"$type\"");
       }
       $result .= self::$handler($v);
     }

@@ -14,7 +14,60 @@ try{
         "utf" => "ЭЭХ! Naïve?"
   );
   print_r($a);
-  $required = "T\n0\n3\nU\n3\nobj\nT\n0\n0\nU\n5\narray\nT\n0\n8\nN\n0\nN\n0.5\nN\n1\nN\n1\nN\n2\nU\n4\nnull\nN\n3\n-\nN\n4\nU\n9\nundefined\nN\n5\n1\nN\n6\n0\nN\n7\nT\n0\n0\nU\n3\nutf\nU\n11\nЭЭХ! Naïve?\n";
+  $required = array("T",
+  "0",
+  "3",
+  "U",
+  "3",
+  "obj",
+  "T",
+  "0",
+  "0",
+  "U",
+  "5",
+  "array",
+  "T",
+  "0",
+  "8",
+  "N",
+  "0",
+  "N",
+  "0.5",
+  "N",
+  "1",
+  "N",
+  "1",
+  "N",
+  "2",
+  "U",
+  "4",
+  "null",
+  "N",
+  "3",
+  "-",
+  "N",
+  "4",
+  "U",
+  "9",
+  "undefined",
+  "N",
+  "5",
+  "1",
+  "N",
+  "6",
+  "0",
+  "N",
+  "7",
+  "T",
+  "0",
+  "0",
+  "U",
+  "3",
+  "utf",
+  "U",
+  "11",
+  "ЭЭХ! Naïve?");
+  $required = implode("\n", $required)."\n";
   $lt_result = Luatexts::save($a);
   echo "RESULT: " . ($required == $lt_result ? "OK\n" : "ERROR\n");
 
@@ -31,7 +84,24 @@ try{
   print("\n\n");
   print("Serialize many arguments: 123, 'test string', array(1, 'test' => 123)\n");
   $lt_result = Luatexts::save(123, 'test string', array(1, 'test' => 123));
-  $required = "N\n123\nU\n11\ntest string\nT\n0\n2\nN\n0\nN\n1\nU\n4\ntest\nN\n123\n";
+  $required = array("N",
+  "123",
+  "U",
+  "11",
+  "test string",
+  "T",
+  "0",
+  "2",
+  "N",
+  "0",
+  "N",
+  "1",
+  "U",
+  "4",
+  "test",
+  "N",
+  "123");
+  $required = implode("\n", $required)."\n";
   echo "RESULT: " . ($required == $lt_result ? "OK\n" : "ERROR\n");
 
   if ($required != $lt_result){
