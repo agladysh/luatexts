@@ -75,30 +75,30 @@ The luatexts format is defined as follows:
   * type: `S`
   * data:
 
-          <unsigned-data:size-in-bytes>\n
-          <string-data, "binary" stuff supported>
+              <unsigned-data:size-in-bytes>\n
+              <string-data, "binary" stuff supported>
 
 * String (UTF-8)
   * type: `8`
   * data:
 
-          <unsigned-data:length-in-characters>\n
-          <string-data, only valid UTF-8 supported, without BOM>
+              <unsigned-data:length-in-characters>\n
+              <string-data, only valid UTF-8 supported, without BOM>
 
 * Table
   * type: `T`
   * data:
 
-          <unsigned-data:array-size>\n
-          <unsigned-data:hash-size>\n
-          <array-item-1>\n
-          ...
-          <array-item-N>\n
-          <hash-key-1>\n
-          <hash-value-1>\n
-          ...
-          <hash-key-N>\n
-          <hash-value-N>
+              <unsigned-data:array-size>\n
+              <unsigned-data:hash-size>\n
+              <array-item-1>\n
+              ...
+              <array-item-N>\n
+              <hash-key-1>\n
+              <hash-value-1>\n
+              ...
+              <hash-key-N>\n
+              <hash-value-N>
 
 ### Notes on table data type:
 
