@@ -14,16 +14,17 @@ try{
         "utf" => "ЭЭХ! Naïve?"
   );
   print_r($a);
-  $required = array("T",
+  $required = array("1",
+  "T",
   "0",
   "3",
-  "U",
+  "8",
   "3",
   "obj",
   "T",
   "0",
   "0",
-  "U",
+  "8",
   "5",
   "array",
   "T",
@@ -39,7 +40,7 @@ try{
   "1",
   "N",
   "2",
-  "U",
+  "8",
   "4",
   "null",
   "N",
@@ -47,7 +48,7 @@ try{
   "-",
   "N",
   "4",
-  "U",
+  "8",
   "9",
   "undefined",
   "N",
@@ -61,10 +62,10 @@ try{
   "T",
   "0",
   "0",
-  "U",
+  "8",
   "3",
   "utf",
-  "U",
+  "8",
   "11",
   "ЭЭХ! Naïve?");
   $required = implode("\n", $required)."\n";
@@ -84,9 +85,10 @@ try{
   print("\n\n");
   print("Serialize many arguments: 123, 'test string', array(1, 'test' => 123)\n");
   $lt_result = Luatexts::save(123, 'test string', array(1, 'test' => 123));
-  $required = array("N",
+  $required = array("3",
+  "N",
   "123",
-  "U",
+  "8",
   "11",
   "test string",
   "T",
@@ -96,7 +98,7 @@ try{
   "0",
   "N",
   "1",
-  "U",
+  "8",
   "4",
   "test",
   "N",

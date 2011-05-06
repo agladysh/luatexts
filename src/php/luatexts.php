@@ -11,12 +11,12 @@ class Luatexts{
     return "N\n" . strval($v) . "\n";
   }
   private static function save_string($v){
-    return "U\n" . mb_strlen($v, 'UTF-8') . "\n" . $v . "\n";
+    return "8\n" . mb_strlen($v, 'UTF-8') . "\n" . $v . "\n";
   }
   private static function save_array($v){
     $result = "";
     foreach ($v as $key => $value){
-      $result .= self::save($key) . self::save($value);
+      $result .= self::save_value($key) . self::save_value($value);
     }
     return "T\n0\n" . count($v) . "\n" . $result;
   }
@@ -28,19 +28,22 @@ class Luatexts{
     'boolean', 'integer', 'double', 'string', 'array', 'null'
   );
 
+  private static function save_value($v){
+    $type = strtolower(gettype($v));
+    $handler = 'save_'.$type;
+
+    if (!in_array($type, self::$supported_types) || !is_callable('Luatexts', $handler)){
+      throw new Exception("luatexts does not support values of type \"$type\"");
+    }
+    return self::$handler($v);
+  }
+
   public static function save(){
     $args = func_get_args();
 
-    if (empty($args)) return '';
-    $result = '';
-    foreach($args as $v){
-      $type = strtolower(gettype($v));
-      $handler = 'save_'.$type;
-
-      if (!in_array($type, self::$supported_types) || !is_callable('Luatexts', $handler)){
-        throw new Exception("luatexts does not support values of type \"$type\"");
-      }
-      $result .= self::$handler($v);
+    $result = count($args) . "\n";
+    for($i=0;$i<count($args);$i++){
+      $result .= self::save_value($args[$i]);
     }
     return $result;
   }
