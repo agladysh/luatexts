@@ -319,3 +319,23 @@ HTTP header, or put this tag into the page's `<head>`:
 
 Current JavaScript library implementation works *only* with UTF-8 strings.
 It is up to user to ensure that string encoding is correct.
+
+### PHP
+
+* `Luatexts::save( ... ) : string`
+
+  Serializes its arguments and returns them as a string.
+  If does not know how to serialize value, throws `Exception`.
+  Call without arguments produces a zero-sized tuple.
+
+Type conversion rules for JS --> Lua:
+
+* `null` --> `nil`
+* `boolean` --> `boolean`
+* `number` --> `number`
+* `string` --> `string` (assuming UTF-8 encoding)
+* `array` --> `table` with array part (implicitly saved as 1-based)
+* `function` --> not supported
+* `object` --> not supported
+
+Nested arrays are supported.
