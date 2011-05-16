@@ -36,7 +36,7 @@ function save_number(v) {
 
 // TODO: Ensure the string is in UTF-8 somehow.
 function save_string(v) {
-  return 'U\n' + v.length + '\n' + v + '\n';
+  return '8\n' + v.length + '\n' + v + '\n';
 }
 
 function save_object(v) {
