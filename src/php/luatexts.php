@@ -61,10 +61,11 @@ class Luatexts
   public static function save()
   {
     $args = func_get_args();
+    $num_args = count($args);
 
-    $result = count($args) . '\n';
+    $result = $num_args . "\n";
 
-    for($i = 0; $i < count($args); $i++)
+    for ($i = 0; $i < $num_args; $i++)
     {
       $result .= self::save_value($args[$i]);
     }
