@@ -28,37 +28,31 @@ try{
   "5",
   "array",
   "T",
-  "0",
-  "8",
-  "N",
-  "0",
+  "3", // null counts as a hole.
+  "5",
   "N",
   "0.5",
   "N",
   "1",
-  "N",
-  "1",
-  "N",
-  "2",
   "8",
   "4",
   "null",
   "N",
-  "3",
+  "4",
   "-",
   "N",
-  "4",
+  "5",
   "8",
   "9",
   "undefined",
   "N",
-  "5",
+  "6",
   "1",
   "N",
-  "6",
+  "7",
   "0",
   "N",
-  "7",
+  "8",
   "T",
   "0",
   "0",
@@ -92,10 +86,8 @@ try{
   "11",
   "test string",
   "T",
-  "0",
-  "2",
-  "N",
-  "0",
+  "1",
+  "1",
   "N",
   "1",
   "8",
@@ -115,20 +107,22 @@ try{
       echo @$required[$i]."\t".@$lt_result[$i].(@$required[$i] != @$lt_result[$i] ? "\t<< ERROR\n" : "\n");
     }
   }
-  
 
   print("\n\n");
-  $a = array(
-        "obj" => array(),
-        "array" => array(
-            0.5, 1, 'null', null, 'undefined', true, false, array()
-        ),
-        "utf" => "ЭЭХ! Naïve?",
-        new Test
-  );
+  $a = new Test;
   print_r($a);
-  $lt_result = Luatexts::save($a);
+  $caught = false;
+  try {
+    $lt_result = Luatexts::save($a);
+  } catch (Exception $e) {
+    $caught = true;
+    echo "EXCEPTION caught as expected\n";
+  }
+
+  if (!$caught) {
+    echo "ERROR: No exception on object serialization";
+  }
 } catch (Exception $e) {
-  echo "\nEXTENSION: ".$e->getMessage()."\n";
+  echo "\nEXCEPTION: ".$e->getMessage()."\n";
 }
 ?>
