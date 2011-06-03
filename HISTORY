@@ -1,3 +1,9 @@
+Version 0.1.3 (2011-06-03)
+==========================
+
+* Fixed array serialization in PHP library
+  (now arrays are implicitly converted to be 1-based, as it is done in JS)
+
 Version 0.1.2 (2011-05-17)
 ==========================
 
