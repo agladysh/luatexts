@@ -26,14 +26,50 @@ class Luatexts
     return "8\n" . mb_strlen($v, 'UTF-8') . "\n" . $v . "\n";
   }
 
+  // This function auto-converts all integer keys be one-based
+  // (i.e. each integer key is incremented by one).
   private static function save_array($v)
   {
+    $arr_size = 0;
+    $hash_size = 0;
+
     $result = '';
+
+    $max_arr_key = -1;
+    for ($i = 0; ; ++$i)
+    {
+      if (isset($v[$i]))
+      {
+        $max_arr_key = $i;
+        ++$arr_size;
+        $result .= self::save_value($v[$i]);
+      }
+      else
+      {
+        break;
+      }
+    }
+
     foreach ($v as $key => $value)
     {
+      if (strtolower(gettype($key)) == 'integer')
+      {
+        if ($key >= 0 && $key <= $max_arr_key)
+        {
+          continue; // Saved this value above
+        }
+        else
+        {
+          // Incrementing the key for data to be consistent.
+          ++$key;
+        }
+      }
+
       $result .= self::save_value($key) . self::save_value($value);
+      ++$hash_size;
     }
-    return 'T\n0\n' . count($v) . '\n' . $result;
+
+    return "T\n" . $arr_size . "\n" . $hash_size . "\n" . $result;
   }
 
   private static function save_null($v)
