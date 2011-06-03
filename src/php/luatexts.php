@@ -8,22 +8,22 @@ class Luatexts
 {
   private static function save_boolean($v)
   {
-    return ($v) ? '1\n' : '0\n';
+    return ($v) ? "1\n" : "0\n";
   }
 
   private static function save_integer($v)
   {
-    return 'N\n' . strval($v) . '\n';
+    return "N\n" . strval($v) . "\n";
   }
 
   private static function save_double($v)
   {
-    return 'N\n' . strval($v) . '\n';
+    return "N\n" . strval($v) . "\n";
   }
 
   private static function save_string($v)
   {
-    return '8\n' . mb_strlen($v, 'UTF-8') . '\n' . $v . '\n';
+    return "8\n" . mb_strlen($v, 'UTF-8') . "\n" . $v . "\n";
   }
 
   private static function save_array($v)
@@ -38,7 +38,7 @@ class Luatexts
 
   private static function save_null($v)
   {
-    return '-\n';
+    return "-\n";
   }
 
   private static $supported_types = array(
