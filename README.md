@@ -82,7 +82,7 @@ The luatexts format is defined as follows:
   * type: `8`
   * data:
 
-              <unsigned-data:length-in-characters>\n
+              <unsigned-data:length-in-codepoints>\n
               <string-data, only valid UTF-8 supported, without BOM>
 
 * Table
@@ -198,14 +198,14 @@ in the loaded table.
 ### Regular strings vs. UTF-8 strings
 
 Regular strings are treated just as a blob of bytes. Their size
-is specified in *bytes*, and reader implementation never looks
+is specified *in bytes*, and reader implementation never looks
 inside the string data. You can pass any data, including something binary
 as a regular string. (Obviously, you can also pass UTF-8 strings
 as regular strings.)
 
 UTF-8 strings are honestly treated as UTF-8 data. Their size is
-specified in *characters*, and reader implementation does read UTF-8
-characters one-by-one, doing the full validation. You can only pass valid
+specified *in codepoints*, and reader implementation does read UTF-8
+codepoints one-by-one, doing the full validation. You can only pass valid
 UTF-8 text data as an UTF-8 string.
 
 Apart from validation, in Lua implementation it does not matter much,
@@ -228,7 +228,7 @@ Mini-FAQ
     because I always try to feed the data to the consumer
     in the format consumer understands best.
 
-2. What if you need one of these missing functions?
+2. What if I need one of these missing functions?
 
     * Use luabins or other feature-complete serialization library.
     * Write it yourself (it is easy!) and send me a pull request.
@@ -254,6 +254,14 @@ Mini-FAQ
      (see JS API for an example). Again, I would greatly appreciate if you
      will share your implementation with the community,
      but it is not mandatory.
+
+4. Should I use "length in characters" or "length in codepoints" for String (UTF-8)?
+
+    Use length in codepoints (UTF-8 is complex). In JavaScript
+    `String.length()` returns length in codepoints, so that is not a problem.
+    
+    If unsure which is which (and using something more aware about bytes that JavaScript), 
+    just use String (regular).
 
 API
 ---
