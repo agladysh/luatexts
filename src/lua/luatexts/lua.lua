@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- luatexts/lua.lua: plain Lua implementation of luatexts
 --------------------------------------------------------------------------------
--- Copyright (c) 2011, luatexts authors
+-- Copyright (c) 2011-2012, luatexts authors
 -- See license in the file named COPYRIGHT
 --------------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ end
 return
 {
   _VERSION = "luatexts-lua 0.1.3";
-  _COPYRIGHT = "Copyright (C) 2011, luatexts authors";
+  _COPYRIGHT = "Copyright (C) 2011-2012, luatexts authors";
   _DESCRIPTION = "Trivial Lua human-readable binary-safe serialization library";
   --
   save = save;
