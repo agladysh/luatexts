@@ -89,8 +89,8 @@ The luatexts format is defined as follows:
   * type: `T`
   * data:
 
-              <unsigned-data:array-size>\n
-              <unsigned-data:hash-size>\n
+              <unsigned-data:array-size-hint>\n
+              <unsigned-data:hash-size-hint>\n
               <array-item-1>\n
               ...
               <array-item-N>\n
@@ -109,6 +109,10 @@ The luatexts format is defined as follows:
   (but decoder must support both);
 * array part may include `nil` values (hash values may be `nil` as well);
 * table keys may not be `NaN` or `nil`.
+
+As an exception to simplify serialization to streams, it is allowed to specify
+array and / or hash size as 0 if it is unknown beforehand. This is not recommended,
+as it would lead to slower load times.
 
 ### Examples
 
