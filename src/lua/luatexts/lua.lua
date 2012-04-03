@@ -13,7 +13,7 @@ local table_concat
 
 --------------------------------------------------------------------------------
 
-local save
+local save, save_cat
 do
   local handlers = { }
 
@@ -53,8 +53,8 @@ do
     local array_size = #t
     cat (array_size) "\n"
 
-    local hash_size_pos = #buf + 1
-    cat ("?") "\n"
+    local hash_size_pos = buf and #buf + 1 or nil
+    cat ("0") "\n" -- Would be left as 0 if save_cat is used
 
     for i = 1, array_size do
       handle_value(cat, t[i], visited, buf)
@@ -74,23 +74,36 @@ do
       end
     end
 
-    buf[hash_size_pos] = hash_size
+    if buf then
+      buf[hash_size_pos] = hash_size
+    end
 
     visited[t] = nil
 
     return cat
   end
 
-  save = function(...)
+  local impl = function(buf, cat, ...)
     local nargs = select("#", ...)
-    local buf = { }
-    local function cat(s) buf[#buf + 1] = s; return cat end
 
     cat (nargs) "\n"
 
     for i = 1, nargs do
       handle_value(cat, select(i, ...), { }, buf)
     end
+
+    return cat
+  end
+
+  save_cat = function(cat, ...)
+    return impl(nil, cat, ...)
+  end
+
+  save = function(...)
+    local buf = { }
+    local function cat(s) buf[#buf + 1] = s; return cat end
+
+    impl(buf, cat, ...)
 
     return table_concat(buf)
   end
@@ -105,5 +118,6 @@ return
   _DESCRIPTION = "Trivial Lua human-readable binary-safe serialization library";
   --
   save = save;
+  save_cat = save_cat;
   -- Sorry, no load() (yet). Patches are welcome.
 }
