@@ -117,8 +117,8 @@ The luatexts format is defined as follows:
 * table keys may not be `NaN` or `nil`.
 
 As an exception to simplify serialization to streams, it is allowed to specify
-array and / or hash size as 0 if it is unknown beforehand. This is not recommended,
-as it would lead to slower load times.
+array and / or hash size as 0 if it is unknown beforehand.
+This is not recommended, as it would lead to slower load times.
 
 ### Examples
 
@@ -265,13 +265,14 @@ Mini-FAQ
      will share your implementation with the community,
      but it is not mandatory.
 
-4. Should I use "length in characters" or "length in codepoints" for String (UTF-8)?
+4. Should I use "length in characters" or "length in codepoints"
+  for String (UTF-8)?
 
     Use length in codepoints (UTF-8 is complex). In JavaScript
     `String.length()` returns length in codepoints, so that is not a problem.
 
-    If unsure which is which (and using something more aware about bytes that JavaScript),
-    just use String (regular).
+    If unsure which is which (and using something more aware about bytes
+    that JavaScript), just use String (regular).
 
 API
 ---
