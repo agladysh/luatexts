@@ -162,90 +162,104 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
     )
 
   print("===== END core tests", NAME, "=====")
-  print("===== BEGIN uint tests", NAME, "=====")
 
-  ensure_returns(
-      "zero uint " .. NAME,
-      2, { true, 0 },
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '0' .. NL
+  for _, BASE in ipairs({ "U", "H", "Z" }) do
+    local NAME = BASE .. " " .. NAME
+
+    print("===== BEGIN uint tests", NAME, "=====")
+
+    ensure_returns(
+        "zero uint " .. NAME,
+        2, { true, 0 },
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. '0' .. NL
+          )
+      )
+
+    ensure_returns(
+        "one uint " .. NAME,
+        2, { true, 1 },
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. '1' .. NL
+          )
+      )
+
+    -- strtoul supports negative numbers, why shouln't we?
+    ensure_returns(
+        "negative uint " .. NAME,
+        2, { true, 4294967295 }, -- Exact value is an implementation detail
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. '-1' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "fractional uint " .. NAME,
+        "load failed: garbage before newline",
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. '1.1' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "uint: missing newline " .. NAME,
+        "load failed: corrupt data, truncated",
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. '1'
+          )
+      )
+
+    ensure_error_with_substring(
+        "uint: missing newline and garbage " .. NAME,
+        "load failed: corrupt data, truncated",
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. '1 yada yada'
+          )
+      )
+
+    do
+      local VALUES =
+      {
+        U = { max = '4294967295', trunc = '4294967296' };
+        H = { max = 'FFFFFFFF', trunc = '100000000' };
+        Z = { max = '1Z141Z3', trunc = '1Z141Z4' };
+      }
+
+      ensure_returns(
+          "huge uint " .. NAME,
+          2, { true, 4294967295 },
+          luatexts.load(
+              '1' .. NL
+           .. BASE .. NL
+             .. VALUES[BASE].max .. NL
+            )
         )
-    )
 
-  ensure_returns(
-      "one uint " .. NAME,
-      2, { true, 1 },
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '1' .. NL
+      ensure_returns(
+          "huge uint truncated " .. NAME,
+          2, { true, 4294967295 }, -- implementation detail
+          luatexts.load(
+              '1' .. NL
+           .. BASE .. NL
+             .. VALUES[BASE].trunc .. NL
+            )
         )
-    )
+    end
 
-  -- strtoul supports negative numbers, why shouln't we?
-  ensure_returns(
-      "negative uint " .. NAME,
-      2, { true, 4294967295 }, -- Exact value is an implementation detail
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '-1' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "fractional uint " .. NAME,
-      "load failed: garbage before newline",
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '1.1' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "uint: missing newline " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '1'
-        )
-    )
-
-  ensure_error_with_substring(
-      "uint: missing newline and garbage " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '1 yada yada'
-        )
-    )
-
-  ensure_returns(
-      "huge uint " .. NAME,
-      2, { true, 2147483647 },
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '2147483647' .. NL
-        )
-    )
-
-  ensure_returns(
-      "huge uint truncated " .. NAME,
-      2, { true, 4294967295 }, -- implementation detail
-      luatexts.load(
-          '1' .. NL
-       .. 'U' .. NL
-         .. '4294967296' .. NL
-        )
-    )
-
-  print("===== END uint tests", NAME, "=====")
+    print("===== END uint tests", NAME, "=====")
+  end
   print("===== BEGIN number tests", NAME, "=====")
 
   ensure_returns(

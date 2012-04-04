@@ -45,7 +45,7 @@ JSON or XML or sandboxed Lua code.
 
 The luatexts format is defined as follows:
 
-    <unsigned-integer-data:tuple-size>\n
+    <unsigned-data-base-10:tuple-size>\n
     <type1>\n
     <data1>\n
     ...
@@ -68,29 +68,35 @@ The luatexts format is defined as follows:
 * Number (double)
   * type: `N`
   * data: *plain string representation, readable by `strtod`*
-* Number (unsigned integer)
+* Number (unsigned integer, base 10)
   * type: `U`
+  * data: *plain string representation, readable by `strtoul`*
+* Number (unsigned integer, base 16)
+  * type: `H`
+  * data: *plain string representation, readable by `strtoul`*
+* Number (unsigned integer, base 36)
+  * type: `Z`
   * data: *plain string representation, readable by `strtoul`*
 * String (regular)
   * type: `S`
   * data:
 
-              <unsigned-data:size-in-bytes>\n
+              <unsigned-data-base-10:size-in-bytes>\n
               <string-data, "binary" stuff supported>
 
 * String (UTF-8)
   * type: `8`
   * data:
 
-              <unsigned-data:length-in-codepoints>\n
+              <unsigned-data-base-10:length-in-codepoints>\n
               <string-data, only valid UTF-8 supported, without BOM>
 
 * Table
   * type: `T`
   * data:
 
-              <unsigned-data:array-size-hint>\n
-              <unsigned-data:hash-size-hint>\n
+              <unsigned-data-base-10:array-size-hint>\n
+              <unsigned-data-base-10:hash-size-hint>\n
               <array-item-1>\n
               ...
               <array-item-N>\n
@@ -263,8 +269,8 @@ Mini-FAQ
 
     Use length in codepoints (UTF-8 is complex). In JavaScript
     `String.length()` returns length in codepoints, so that is not a problem.
-    
-    If unsure which is which (and using something more aware about bytes that JavaScript), 
+
+    If unsure which is which (and using something more aware about bytes that JavaScript),
     just use String (regular).
 
 API

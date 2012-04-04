@@ -70,6 +70,8 @@ extern "C" {
 #define LUATEXTS_CTRUE       '1' /* 0x31 (49) */
 #define LUATEXTS_CNUMBER     'N' /* 0x4E (78) */
 #define LUATEXTS_CUINT       'U' /* 0x55 (85) */
+#define LUATEXTS_CUINTHEX    'H' /* 0x48 (48) */
+#define LUATEXTS_CUINT36     'Z' /* 0x5A (90) */
 #define LUATEXTS_CSTRING     'S' /* 0x53 (83) */
 #define LUATEXTS_CTABLE      'T' /* 0x54 (84) */
 #define LUATEXTS_CSTRINGUTF8 '8' /* 0x38 (56) */
@@ -384,7 +386,7 @@ static int ltsLS_readline(
   return LUATEXTS_ECLIPPED;
 }
 
-static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest)
+static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
 {
   size_t len = 0;
   const unsigned char * data = NULL;
@@ -403,7 +405,7 @@ static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest)
     * at least one non-numeric trailing byte.
     */
     char * endptr = NULL;
-    LUATEXTS_UINT value = luatexts_touint((const char *)data, &endptr, 10);
+    LUATEXTS_UINT value = luatexts_touint((const char *)data, &endptr, base);
     if ((const unsigned char *)endptr != data + len)
     {
       ESPAM((
@@ -463,11 +465,11 @@ static int load_table(lua_State * L, lts_LoadState * ls)
   LUATEXTS_UINT hash_size = 0;
   LUATEXTS_UINT total_size = 0;
 
-  int result = ltsLS_readuint(ls, &array_size);
+  int result = ltsLS_readuint(ls, &array_size, 10);
 
   if (result == LUATEXTS_ESUCCESS)
   {
-    result = ltsLS_readuint(ls, &hash_size);
+    result = ltsLS_readuint(ls, &hash_size, 10);
   }
 
   if (result == LUATEXTS_ESUCCESS)
@@ -615,7 +617,33 @@ static int load_value(lua_State * L, lts_LoadState * ls)
         {
           LUATEXTS_UINT value;
 
-          result = ltsLS_readuint(ls, &value);
+          result = ltsLS_readuint(ls, &value, 10);
+          if (result == LUATEXTS_ESUCCESS)
+          {
+            /* TODO: Maybe do lua_pushinteger if value fits? */
+            lua_pushnumber(L, value);
+          }
+        }
+        break;
+
+      case LUATEXTS_CUINTHEX:
+        {
+          LUATEXTS_UINT value;
+
+          result = ltsLS_readuint(ls, &value, 16);
+          if (result == LUATEXTS_ESUCCESS)
+          {
+            /* TODO: Maybe do lua_pushinteger if value fits? */
+            lua_pushnumber(L, value);
+          }
+        }
+        break;
+
+      case LUATEXTS_CUINT36:
+        {
+          LUATEXTS_UINT value;
+
+          result = ltsLS_readuint(ls, &value, 36);
           if (result == LUATEXTS_ESUCCESS)
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
@@ -630,7 +658,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
 
           /* Read string size */
           LUATEXTS_UINT len = 0;
-          result = ltsLS_readuint(ls, &len);
+          result = ltsLS_readuint(ls, &len, 10);
 
           /* Check size */
           if (result == LUATEXTS_ESUCCESS)
@@ -680,7 +708,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           /* Read string size */
           LUATEXTS_UINT len_chars = 0;
           size_t len_bytes = 0;
-          result = ltsLS_readuint(ls, &len_chars);
+          result = ltsLS_readuint(ls, &len_chars, 10);
 
           /* Check size */
           if (result == LUATEXTS_ESUCCESS)
@@ -754,7 +782,7 @@ static int luatexts_load(
   * Motivation: too complicated; we will fail if buffer is too small anyway.
   */
 
-  result = ltsLS_readuint(&ls, &tuple_size);
+  result = ltsLS_readuint(&ls, &tuple_size, 10);
   /* Check size */
   if (result == LUATEXTS_ESUCCESS)
   {
