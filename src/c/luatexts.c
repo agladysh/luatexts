@@ -408,10 +408,33 @@ static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
     LUATEXTS_UINT value = luatexts_touint((const char *)data, &endptr, base);
     if ((const unsigned char *)endptr != data + len)
     {
+      size_t i = 0;
       ESPAM((
-          "readuint: garbage before eol: end %p start %p len %lu\n",
+          "readuint: garbage before eol: end %p start %p len %lu:\n",
           endptr, data, (long unsigned int)len
         ));
+      for (i = 0; i < len; ++i)
+      {
+        ESPAM((
+            " %c ", data[i]
+          ));
+        if (data + i == (const unsigned char *)endptr)
+        {
+          ESPAM(("|  "));
+        }
+      }
+      ESPAM(("\n"));
+      for (i = 0; i < len; ++i)
+      {
+        ESPAM((
+            " %02X", data[i]
+          ));
+        if (data + i == (const unsigned char *)endptr)
+        {
+          ESPAM(("|  "));
+        }
+      }
+      ESPAM(("\n"));
       result = LUATEXTS_EGARBAGE;
     }
     else
