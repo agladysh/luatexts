@@ -370,7 +370,7 @@ static int ltsLS_readline(
   )
 {
   const unsigned char * origin = ls->pos;
-  const unsigned char * last = 0;
+  const unsigned char * last = NULL;
   size_t read = 0;
 
   while (ltsLS_good(ls))
@@ -384,7 +384,7 @@ static int ltsLS_readline(
       if (LUATEXTS_UNLIKELY(*cur == '\n'))
       {
         *dest = origin;
-        *len = (*last == '\r') ? read - 1 : read;
+        *len = (last != NULL && *last == '\r') ? read - 1 : read;
 
         return LUATEXTS_ESUCCESS;
       }
