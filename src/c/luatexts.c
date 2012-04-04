@@ -414,15 +414,7 @@ static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest)
     }
     else
     {
-      if ((lua_Integer)value < 0) /* Implementation detail */
-      {
-        ESPAM(("readuint: value does not fit to lua_Integer\n"));
-        result = LUATEXTS_ETOOHUGE;
-      }
-      else
-      {
-        *dest = value;
-      }
+      *dest = value;
     }
   }
 
@@ -626,7 +618,8 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           result = ltsLS_readuint(ls, &value);
           if (result == LUATEXTS_ESUCCESS)
           {
-            lua_pushinteger(L, value);
+            /* TODO: Maybe do lua_pushinteger if value fits? */
+            lua_pushnumber(L, value);
           }
         }
         break;
@@ -638,6 +631,16 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           /* Read string size */
           LUATEXTS_UINT len = 0;
           result = ltsLS_readuint(ls, &len);
+
+          /* Check size */
+          if (result == LUATEXTS_ESUCCESS)
+          {
+            if ((lua_Integer)len < 0) /* Implementation detail */
+            {
+              ESPAM(("string: value does not fit to lua_Integer\n"));
+              result = LUATEXTS_ETOOHUGE;
+            }
+          }
 
           /* Read string data */
           if (result == LUATEXTS_ESUCCESS)
@@ -678,6 +681,16 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           LUATEXTS_UINT len_chars = 0;
           size_t len_bytes = 0;
           result = ltsLS_readuint(ls, &len_chars);
+
+          /* Check size */
+          if (result == LUATEXTS_ESUCCESS)
+          {
+            if ((lua_Integer)len < 0) /* Implementation detail */
+            {
+              ESPAM(("stringutf8: value does not fit to lua_Integer\n"));
+              result = LUATEXTS_ETOOHUGE;
+            }
+          }
 
           /* Read string data */
           if (result == LUATEXTS_ESUCCESS)
@@ -742,6 +755,16 @@ static int luatexts_load(
   */
 
   result = ltsLS_readuint(&ls, &tuple_size);
+  /* Check size */
+  if (result == LUATEXTS_ESUCCESS)
+  {
+    if ((lua_Integer)tuple_size < 0) /* Implementation detail */
+    {
+      ESPAM(("tuple: size does not fit to lua_Integer\n"));
+      result = LUATEXTS_ETOOHUGE;
+    }
+  }
+
   for (i = 0; i < tuple_size && result == LUATEXTS_ESUCCESS; ++i)
   {
     SPAM(("load_tuple: loading value %lu of %lu\n", i + 1, tuple_size));

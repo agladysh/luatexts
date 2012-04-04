@@ -184,10 +184,10 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
         )
     )
 
-  -- Exact error message is implementation detail
-  ensure_error_with_substring(
+  -- strtoul supports negative numbers, why shouln't we?
+  ensure_returns(
       "negative uint " .. NAME,
-      "load failed: value too huge",
+      2, { true, 4294967295 }, -- Exact value is an implementation detail
       luatexts.load(
           '1' .. NL
        .. 'U' .. NL
@@ -235,14 +235,13 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
         )
     )
 
-  -- Will probably fail on x86_64, as lua_Integer should be larger there
-  ensure_error_with_substring(
-      "negative uint " .. NAME,
-      "load failed: value too huge",
+  ensure_returns(
+      "huge uint truncated " .. NAME,
+      2, { true, 4294967295 }, -- implementation detail
       luatexts.load(
           '1' .. NL
        .. 'U' .. NL
-         .. '2147483648' .. NL
+         .. '4294967296' .. NL
         )
     )
 
