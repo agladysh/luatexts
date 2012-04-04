@@ -18,8 +18,13 @@ extern "C" {
 }
 #endif
 
+#define DO_XSPAM  0
+#define DO_XESPAM 0
+#define DO_SPAM   0
+#define DO_ESPAM  0
+
 /* Really spammy SPAM */
-#if 0
+#if DO_XSPAM
   #include <ctype.h>
   #define XSPAM(a) printf a
 #else
@@ -27,7 +32,7 @@ extern "C" {
 #endif
 
 /* Really spammy error-message SPAM */
-#if 0
+#if DO_XESPAM
   #include <ctype.h>
   #define XESPAM(a) printf a
 #else
@@ -35,7 +40,7 @@ extern "C" {
 #endif
 
 /* Regular SPAM */
-#if 0
+#if DO_SPAM
   #include <ctype.h>
   #define SPAM(a) printf a
 #else
@@ -43,7 +48,7 @@ extern "C" {
 #endif
 
 /* Error-message SPAM */
-#if 0
+#if DO_ESPAM
   #include <ctype.h>
   #define ESPAM(a) printf a
 #else
