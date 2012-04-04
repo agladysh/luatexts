@@ -87,6 +87,20 @@ typedef unsigned long LUATEXTS_UINT;
 
 #define luatexts_tonumber strtod
 
+#if defined(__GNUC__)
+
+#define LUATEXTS_LIKELY(x)    __builtin_expect(!!(x), 1)
+#define LUATEXTS_UNLIKELY(x)  __builtin_expect(!!(x), 0)
+
+#endif /* defined(__GNUC__) */
+
+#ifndef LUATEXTS_LIKELY
+
+#define LUATEXTS_LIKELY(x)    (x)
+#define LUATEXTS_UNLIKELY(x)  (x)
+
+#endif /* !defined(LUATEXTS_LIKELY) */
+
 typedef struct lts_LoadState
 {
   const unsigned char * pos;
@@ -104,7 +118,7 @@ static void ltsLS_init(
 }
 
 #define ltsLS_good(ls) \
-  ((ls)->pos != NULL)
+  (LUATEXTS_LIKELY((ls)->pos != NULL))
 
 #define ltsLS_unread(ls) \
   ((ls)->unread)
@@ -114,7 +128,7 @@ static const unsigned char * ltsLS_eat(lts_LoadState * ls, size_t len)
   const unsigned char * result = NULL;
   if (ltsLS_good(ls))
   {
-    if (ltsLS_unread(ls) >= len)
+    if (LUATEXTS_LIKELY(ltsLS_unread(ls) >= len))
     {
       result = ls->pos;
       ls->pos += len;
@@ -187,7 +201,7 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
   const unsigned char * origin = ls->pos;
 
   /* Check if we have any data in the buffer */
-  if (!ltsLS_good(ls) || ltsLS_unread(ls) < 1)
+  if (!ltsLS_good(ls) || LUATEXTS_UNLIKELY(ltsLS_unread(ls) < 1))
   {
     ESPAM(("eatutf8char: no buffer to start with\n"));
 
@@ -212,7 +226,7 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
     ));
 
   /* Check if it was a valid first byte. */
-  if (exp_len < 1)
+  if (LUATEXTS_UNLIKELY(exp_len < 1))
   {
     ESPAM(("eatutf8char: invalid start byte 0x%X (%d)\n", b, b));
 
@@ -223,7 +237,7 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
   }
 
   /* If it was a single-byte ASCII character, return right away. */
-  if (exp_len == 1)
+  if (LUATEXTS_LIKELY(exp_len == 1))
   {
     XSPAM(("eatutf8char: ascii 0x%X (%d)\n", b, b));
 
@@ -236,7 +250,7 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
   * It was a multi-byte character. Check if we have enough bytes unread.
   * Note that we've eaten one byte already.
   */
-  if (ltsLS_unread(ls) + 1 < (unsigned char)exp_len)
+  if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) + 1 < (unsigned char)exp_len))
   {
     ESPAM(("eatutf8char: multibyte character clipped\n"));
 
@@ -258,7 +272,7 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
     XSPAM(("eatutf8char: cont 0x%X (%d)\n", b, b));
 
     /* Check if it is a continuation byte */
-    if (utf8_char_len[b] != -1)
+    if (LUATEXTS_UNLIKELY(utf8_char_len[b] != -1))
     {
       ESPAM(("eatutf8char: invalid continuation byte 0x%X (%d)\n", b, b));
 
@@ -270,13 +284,13 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
   }
 
   /* All bytes are correct; check out for overlong forms and surrogates */
-  if (
+  if (LUATEXTS_UNLIKELY(
       (exp_len == 2 && ((origin[0]  & 0xFE) == 0xC0))                      ||
       (exp_len == 3 &&  (origin[0] == 0xE0 && (origin[1] & 0xE0) == 0x80)) ||
       (exp_len == 4 &&  (origin[0] == 0xF0 && (origin[1] & 0xF0) == 0x80)) ||
       (exp_len == 4 &&  (origin[0] == 0xF4 && (origin[1] > 0x8F)))         ||
       (exp_len == 3 &&  (origin[0] == 0xED && (origin[1] & 0xE0) != 0x80))
-    )
+    ))
   {
     ESPAM(("eatutf8char: overlong or surrogate detected\n"));
 
@@ -287,12 +301,12 @@ static int ltsLS_eatutf8char(lts_LoadState * ls, size_t * len_bytes)
   }
 
   /* Reject BOM non-characters: U+FFFE and U+FFFF */
-  if (
+  if (LUATEXTS_UNLIKELY(
       exp_len == 3 && (
           (origin[0] == 0xEF && origin[1] == 0xBF && origin[2] == 0xBE) ||
           (origin[0] == 0xEF && origin[1] == 0xBF && origin[2] == 0xBF)
         )
-    )
+    ))
   {
     ESPAM(("eatutf8char: BOM detected\n"));
 
@@ -330,7 +344,7 @@ static int ltsLS_eatutf8(
   for (i = 0; i < num_chars; ++i)
   {
     result = ltsLS_eatutf8char(ls, &num_bytes);
-    if (result != LUATEXTS_ESUCCESS)
+    if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
     {
       ESPAM(("eatutf8: failed to eat char %lu\n", (long unsigned int)i));
 
@@ -361,13 +375,13 @@ static int ltsLS_readline(
 
   while (ltsLS_good(ls))
   {
-    if (ltsLS_unread(ls) > 0)
+    if (LUATEXTS_LIKELY(ltsLS_unread(ls) > 0))
     {
       const unsigned char * cur = ls->pos;
       ++ls->pos;
       --ls->unread;
 
-      if (*cur == '\n')
+      if (LUATEXTS_UNLIKELY(*cur == '\n'))
       {
         *dest = origin;
         *len = (*last == '\r') ? read - 1 : read;
@@ -397,7 +411,7 @@ static int luatexts_touint(
     LUATEXTS_UINT * result
   )
 {
-  if (base == 10)
+  if (LUATEXTS_LIKELY(base == 10))
   {
     /*
       Not supporting leading '-' (this is unsigned int)
@@ -411,7 +425,7 @@ static int luatexts_touint(
     while ((LUATEXTS_UINT)(*data - '0') < 10) /* is a number */
     {
       /* Are we about to overflow? */
-      if ((k >= 429496729) && (k != 429496729 || *data > '5'))
+      if (LUATEXTS_UNLIKELY(k >= 429496729) && (k != 429496729 || *data > '5'))
       {
         ESPAM(("luatexts_touint: value does not fit to uint32_t\n"));
         return LUATEXTS_ETOOHUGE;
@@ -437,13 +451,16 @@ static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
   const unsigned char * data = NULL;
   int result = ltsLS_readline(ls, &data, &len);
 
-  if (result == LUATEXTS_ESUCCESS && len == 0)
+  if (
+      LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
+        && LUATEXTS_UNLIKELY(len == 0)
+    )
   {
     ESPAM(("readuint: failed to read line\n"));
     result = LUATEXTS_EBADDATA;
   }
 
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     /*
     * This is safe, since we're guaranteed to have
@@ -454,8 +471,8 @@ static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
     result = luatexts_touint((const char *)data, &endptr, base, &value);
 
     if (
-        result == LUATEXTS_ESUCCESS &&
-        (const unsigned char *)endptr != data + len
+        LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
+          && LUATEXTS_UNLIKELY((const unsigned char *)endptr != data + len)
       )
     {
 #if DO_XESPAM
@@ -504,13 +521,16 @@ static int ltsLS_readnumber(lts_LoadState * ls, LUATEXTS_NUMBER * dest)
   const unsigned char * data = NULL;
   int result = ltsLS_readline(ls, &data, &len);
 
-  if (result == LUATEXTS_ESUCCESS && len == 0)
+  if (
+      LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
+      && LUATEXTS_UNLIKELY(len == 0)
+    )
   {
     ESPAM(("readnumber: failed to read line\n"));
     result = LUATEXTS_EBADDATA;
   }
 
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     /*
     * This is safe, since we're guaranteed to have
@@ -518,7 +538,7 @@ static int ltsLS_readnumber(lts_LoadState * ls, LUATEXTS_NUMBER * dest)
     */
     char * endptr = NULL;
     LUATEXTS_NUMBER value = strtod((const char *)data, &endptr);
-    if ((const unsigned char *)endptr != data + len)
+    if (LUATEXTS_UNLIKELY((const unsigned char *)endptr != data + len))
     {
       ESPAM(("readnumber: garbage before eol\n"));
       result = LUATEXTS_EGARBAGE;
@@ -542,16 +562,16 @@ static int load_table(lua_State * L, lts_LoadState * ls)
 
   int result = ltsLS_readuint(ls, &array_size, 10);
 
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     result = ltsLS_readuint(ls, &hash_size, 10);
   }
 
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     total_size = array_size + hash_size;
 
-    if (
+    if (LUATEXTS_UNLIKELY(
         array_size < 0 || array_size > MAXASIZE ||
         hash_size < 0  ||
         (hash_size > 0 && ceillog2((unsigned int)hash_size) > MAXBITS) ||
@@ -559,7 +579,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         * Simplification: Assuming minimum value size is one byte.
         */
         ltsLS_unread(ls) < (array_size + hash_size * 2)
-      )
+      ))
     {
       ESPAM(("load_table: too huge\n"));
       result = LUATEXTS_ETOOHUGE;
@@ -571,7 +591,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
       array_size, hash_size, total_size
     ));
 
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     LUATEXTS_UINT i = 0;
 
@@ -580,7 +600,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
     for (i = 0; i < array_size; ++i)
     {
       result = load_value(L, ls); /* Load value. */
-      if (result != LUATEXTS_ESUCCESS)
+      if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
       {
         ESPAM(("load_table: failed to read array part value\n"));
         break;
@@ -589,14 +609,14 @@ static int load_table(lua_State * L, lts_LoadState * ls)
       lua_rawseti(L, -2, i + 1);
     }
 
-    if (result == LUATEXTS_ESUCCESS)
+    if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
     {
       for (i = 0; i < hash_size; ++i)
       {
         int key_type = LUA_TNONE;
 
         result = load_value(L, ls); /* Load key. */
-        if (result != LUATEXTS_ESUCCESS)
+        if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
         {
           ESPAM(("load_table: failed to read key\n"));
           break;
@@ -604,7 +624,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
 
         /* Table key can't be nil or NaN */
         key_type = lua_type(L, -1);
-        if (key_type == LUA_TNIL)
+        if (LUATEXTS_UNLIKELY(key_type == LUA_TNIL))
         {
           /* Corrupt data? */
           ESPAM(("load_table: key is nil\n"));
@@ -615,7 +635,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         if (key_type == LUA_TNUMBER)
         {
           lua_Number key = lua_tonumber(L, -1);
-          if (luai_numisnan(key))
+          if (LUATEXTS_UNLIKELY(luai_numisnan(key)))
           {
             /* Corrupt data? */
             ESPAM(("load_table: key is nan\n"));
@@ -625,7 +645,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         }
 
         result = load_value(L, ls); /* Load value. */
-        if (result != LUATEXTS_ESUCCESS)
+        if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
         {
           ESPAM(("load_table: failed to read value\n"));
           break;
@@ -646,14 +666,17 @@ static int load_value(lua_State * L, lts_LoadState * ls)
 
   /* Read value type */
   int result = ltsLS_readline(ls, &type, &len);
-  if (result == LUATEXTS_ESUCCESS && len != 1)
+  if (
+      LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
+        && LUATEXTS_UNLIKELY(len != 1)
+    )
   {
     ESPAM(("load_value: failed to read value type line\n"));
     result = LUATEXTS_EGARBAGE;
   }
 
   /* Read value data */
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     SPAM((
         "load_value: value type '%c' 0x%X (%d)\n",
@@ -681,7 +704,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           lua_Number value;
 
           result = ltsLS_readnumber(ls, &value);
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             lua_pushnumber(L, value);
           }
@@ -693,7 +716,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           LUATEXTS_UINT value;
 
           result = ltsLS_readuint(ls, &value, 10);
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
             lua_pushnumber(L, value);
@@ -706,7 +729,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           LUATEXTS_UINT value;
 
           result = ltsLS_readuint(ls, &value, 16);
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
             lua_pushnumber(L, value);
@@ -719,7 +742,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           LUATEXTS_UINT value;
 
           result = ltsLS_readuint(ls, &value, 36);
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
             lua_pushnumber(L, value);
@@ -736,9 +759,10 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           result = ltsLS_readuint(ls, &len, 10);
 
           /* Check size */
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
-            if ((lua_Integer)len < 0) /* Implementation detail */
+            /* Implementation detail */
+            if (LUATEXTS_UNLIKELY((lua_Integer)len < 0))
             {
               ESPAM(("string: value does not fit to lua_Integer\n"));
               result = LUATEXTS_ETOOHUGE;
@@ -746,10 +770,10 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           }
 
           /* Read string data */
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             str = ltsLS_eat(ls, len);
-            if (str == NULL)
+            if (LUATEXTS_UNLIKELY(str == NULL))
             {
               ESPAM(("load_value: bad string size\n"));
               result = LUATEXTS_EBADSIZE;
@@ -757,19 +781,22 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           }
 
           /* Eat newline after string data */
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             size_t empty = 0;
             const unsigned char * nl = NULL;
             result = ltsLS_readline(ls, &nl, &empty);
-            if (result == LUATEXTS_ESUCCESS && empty != 0)
+            if (
+                LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
+                  && LUATEXTS_UNLIKELY(empty != 0)
+              )
             {
               ESPAM(("load_value: string: garbage before eol\n"));
               result = LUATEXTS_EGARBAGE;
             }
           }
 
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             lua_pushlstring(L, (const char *)str, len);
           }
@@ -786,9 +813,10 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           result = ltsLS_readuint(ls, &len_chars, 10);
 
           /* Check size */
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
-            if ((lua_Integer)len < 0) /* Implementation detail */
+            /* Implementation detail */
+            if (LUATEXTS_UNLIKELY((lua_Integer)len < 0))
             {
               ESPAM(("stringutf8: value does not fit to lua_Integer\n"));
               result = LUATEXTS_ETOOHUGE;
@@ -796,25 +824,28 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           }
 
           /* Read string data */
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             result = ltsLS_eatutf8(ls, len_chars, &str, &len_bytes);
           }
 
           /* Eat newline after string data */
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             size_t empty = 0;
             const unsigned char * nl = NULL;
             result = ltsLS_readline(ls, &nl, &empty);
-            if (result == LUATEXTS_ESUCCESS && empty != 0)
+            if (
+                LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
+                  && LUATEXTS_UNLIKELY(empty != 0)
+              )
             {
               ESPAM(("load_value: utf8: garbage before eol\n"));
               result = LUATEXTS_EGARBAGE;
             }
           }
 
-          if (result == LUATEXTS_ESUCCESS)
+          if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             lua_pushlstring(L, (const char *)str, len_bytes);
           }
@@ -859,9 +890,10 @@ static int luatexts_load(
 
   result = ltsLS_readuint(&ls, &tuple_size, 10);
   /* Check size */
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
-    if ((lua_Integer)tuple_size < 0) /* Implementation detail */
+    /* Implementation detail */
+    if (LUATEXTS_UNLIKELY((lua_Integer)tuple_size < 0))
     {
       ESPAM(("tuple: size does not fit to lua_Integer\n"));
       result = LUATEXTS_ETOOHUGE;
@@ -879,7 +911,7 @@ static int luatexts_load(
   * Motivation: more casual, this is a text format after all.
   */
 
-  if (result == LUATEXTS_ESUCCESS)
+  if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     *count = tuple_size;
   }
@@ -945,7 +977,7 @@ static int lload(lua_State * L)
   lua_pushboolean(L, 1);
 
   result = luatexts_load(L, buf, len, &tuple_size);
-  if (result != LUATEXTS_ESUCCESS)
+  if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
   {
     luaL_checkstack(L, 1, "lload-err");
     lua_pushnil(L);
