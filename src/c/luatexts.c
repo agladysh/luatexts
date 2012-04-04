@@ -14,6 +14,14 @@ extern "C" {
 
 #include "luainternals.h"
 
+/* TODO: Hide this mmap stuff in a separate file */
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+
 #if defined (__cplusplus)
 }
 #endif
@@ -1061,10 +1069,115 @@ static int lload(lua_State * L)
   return tuple_size + 1;
 }
 
+/* TODO: Hide this mmap stuff in a separate file */
+/* TODO: Support fd as an argument instead of a filename */
+/*
+* TODO: Not quite exception-safe.
+*       Must put close() and unmap() calls to __gc somewhere,
+*       so they would be called on error.
+*/
+static int lload_from_file(lua_State * L)
+{
+  const char * filename = (const char *)luaL_checkstring(L, 1);
+
+  size_t tuple_size = 0;
+  int result = 0;
+
+  const unsigned char * buf = NULL;
+
+  struct stat sb;
+
+  int fd = open(filename, O_RDONLY);
+  if (fd == -1)
+  {
+    luaL_checkstack(L, 2, "lloadff-err");
+    lua_pushnil(L);
+    lua_pushfstring(
+        L, "load_from_file failed: can't open " LUA_QL("%s") " for reading: %s",
+        filename, strerror(errno)
+      );
+    return 2;
+  }
+
+  if (fstat(fd, &sb) == -1)
+  {
+    luaL_checkstack(L, 2, "lloadff-err");
+    lua_pushnil(L);
+    lua_pushfstring(
+        L, "load_from_file failed: can't stat " LUA_QL("%s") ": %s",
+        filename, strerror(errno)
+      );
+    close(fd);
+    return 2;
+  }
+
+  if (!S_ISREG(sb.st_mode))
+  {
+    luaL_checkstack(L, 2, "lloadff-err");
+    lua_pushnil(L);
+    lua_pushfstring(
+        L, "load_from_file failed: " LUA_QL("%s") " is not a file",
+        filename
+      );
+    close(fd);
+    return 2;
+  }
+
+  if (sb.st_size == 0)
+  {
+    luaL_checkstack(L, 2, "lloadff-err");
+    lua_pushnil(L);
+    lua_pushfstring(
+        L, "load_from_file failed: " LUA_QL("%s") " is empty",
+        filename
+      );
+    close(fd);
+    return 2;
+  }
+
+  buf = (const unsigned char *)mmap(
+      0, sb.st_size, PROT_READ, MAP_SHARED, fd, 0
+    );
+  if (buf == MAP_FAILED)
+  {
+    luaL_checkstack(L, 2, "lloadff-err");
+    lua_pushnil(L);
+    lua_pushfstring(
+        L, "load_from_file failed: " LUA_QL("%s") " mmap failed: %s",
+        filename, strerror(errno)
+      );
+    close(fd);
+    return 2;
+  }
+
+  close(fd);
+
+  luaL_checkstack(L, 1, "lloadff");
+  lua_pushboolean(L, 1);
+
+  result = luatexts_load(L, buf, sb.st_size, &tuple_size);
+  if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
+  {
+    luaL_checkstack(L, 1, "lloadff-err");
+    lua_pushnil(L);
+    lua_replace(L, -3); /* Replace pre-pushed true with nil */
+    return 2; /* Error message already on stack */
+  }
+
+  if (munmap((void *)buf, sb.st_size) == -1)
+  {
+    ESPAM(("lloadff: munmap failed"));
+    /* What else can we do? */
+  }
+
+  return tuple_size + 1;
+}
+
 /* Lua module API */
 static const struct luaL_reg R[] =
 {
   { "load", lload },
+  { "load_from_file", lload_from_file },
 
   { NULL, NULL }
 };

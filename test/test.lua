@@ -2205,7 +2205,7 @@ end)()
     local mutated_ok = 0
     local mutated_fail = 0
 
-    local num_steps = 1e4
+    local num_steps = 1e0
     for i = 1, num_steps do
       if i % 500 == 0 --[[or (i >= 8732 and NL == "\n")--]] then
         print("step", i, "of", num_steps)
@@ -2275,7 +2275,62 @@ end)()
   end
 
   print("===== END generative tests", NAME, "=====")
-
 end
+
+local NAME = ""
+
+print("===== BEGIN file tests", NAME, "=====")
+
+ensure_error_with_substring(
+    "/dev/null " .. NAME,
+    "load_from_file failed: '/dev/null' is not a file",
+    luatexts.load_from_file("/dev/null")
+  )
+
+ensure_error_with_substring(
+    "missing file " .. NAME,
+    "load_from_file failed:"
+ .. " can't open './test/data/no-such-file.luatexts' for reading:"
+ .. " No such file or directory",
+    luatexts.load_from_file("./test/data/no-such-file.luatexts")
+  )
+
+ensure_error_with_substring(
+    "directory " .. NAME,
+    "load_from_file failed: './test/data/' is not a file",
+    luatexts.load_from_file("./test/data/")
+  )
+
+ensure_error_with_substring(
+    "empty " .. NAME,
+    "load_from_file failed: './test/data/empty.luatexts' is empty",
+    luatexts.load_from_file("./test/data/empty.luatexts")
+  )
+
+ensure_error_with_substring(
+    "random garbage " .. NAME,
+    "load failed: corrupt data",
+    luatexts.load_from_file("./test/data/garbage.luatexts")
+  )
+
+ensure_error_with_substring(
+    "truncated-1 " .. NAME,
+    "load failed: corrupt data",
+    luatexts.load_from_file("./test/data/truncated.luatexts")
+  )
+
+ensure_error_with_substring(
+    "truncated-2 " .. NAME,
+    "load failed: corrupt data",
+    luatexts.load_from_file("./test/data/truncated2.luatexts")
+  )
+
+ensure_returns(
+    "good " .. NAME,
+    2, { true, 42 },
+    luatexts.load_from_file("./test/data/good.luatexts")
+  )
+
+print("===== END file tests", NAME, "=====")
 
 print("OK")
