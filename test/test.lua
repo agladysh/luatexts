@@ -2205,7 +2205,7 @@ end)()
     local mutated_ok = 0
     local mutated_fail = 0
 
-    local num_steps = 1e0
+    local num_steps = 1e4
     for i = 1, num_steps do
       if i % 500 == 0 --[[or (i >= 8732 and NL == "\n")--]] then
         print("step", i, "of", num_steps)
