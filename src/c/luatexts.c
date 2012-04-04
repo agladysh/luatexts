@@ -474,7 +474,7 @@ static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
 
     k = k * 10u + (LUATEXTS_UINT)(*ls->pos - '0');
 
-    if (LUATEXTS_UNLIKELY(ls->unread == 0))
+    if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) == 0))
     {
       ESPAM(("ltsLS_readuint10: clipped\n"));
       ls->unread = 0;
@@ -488,7 +488,7 @@ static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
 
   if (*ls->pos == '\r')
   {
-    if (LUATEXTS_UNLIKELY(ls->unread == 0))
+    if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) == 0))
     {
       ESPAM(("ltsLS_readuint10: clipped\n"));
       ls->unread = 0;
@@ -509,7 +509,7 @@ static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
   }
   else
   {
-    if (LUATEXTS_UNLIKELY(ls->unread == 0))
+    if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) == 0))
     {
       ESPAM(("ltsLS_readuint10: clipped\n"));
       ls->unread = 0;
