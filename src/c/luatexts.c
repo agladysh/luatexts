@@ -411,36 +411,109 @@ static int luatexts_touint(
     LUATEXTS_UINT * result
   )
 {
-  if (LUATEXTS_LIKELY(base == 10))
+  *result = strtoul(data, endptr, base);
+
+  return LUATEXTS_ESUCCESS;
+}
+
+static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
+{
+  /*
+    Not supporting leading '-' (this is unsigned int)
+    and not eating leading whitespace
+    (it is accidental that strtoul eats it,
+    luatexts format formally does not support this).
+  */
+  LUATEXTS_UINT k = 0;
+
+  if (!ltsLS_good(ls))
   {
-    /*
-      Not supporting leading '-' (this is unsigned int)
-      and not eating leading whitespace
-      (it is accidental that strtoul eats it,
-      luatexts format formally does not support this).
-
-      Loosely inspired by lj_str_numconv() from LuaJIT 2.
-    */
-    LUATEXTS_UINT k = 0;
-    while ((LUATEXTS_UINT)(*data - '0') < 10) /* is a number */
-    {
-      /* Are we about to overflow? */
-      if (LUATEXTS_UNLIKELY(k >= 429496729) && (k != 429496729 || *data > '5'))
-      {
-        ESPAM(("luatexts_touint: value does not fit to uint32_t\n"));
-        return LUATEXTS_ETOOHUGE;
-      }
-
-      k = k * 10u + (LUATEXTS_UINT)(*data++ - '0');
-    }
-
-    *endptr = (char *)data;
-    *result = k;
-
-    return LUATEXTS_ESUCCESS;
+    ESPAM(("ltsLS_readuint10: clipped\n"));
+    return LUATEXTS_ECLIPPED;
   }
 
-  *result = strtoul(data, endptr, base);
+  if (LUATEXTS_UNLIKELY((LUATEXTS_UINT)(*ls->pos - '0') >= 10))
+  {
+    /*
+      To provide nicer error messages we distinguish empty line
+      and random garbage.
+    */
+    if (*ls->pos == '\n')
+    {
+      ESPAM(("ltsLS_readuint10: empty table\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ECLIPPED;
+    }
+
+    ESPAM(("ltsLS_readuint10: first character is not a number\n"));
+    ls->unread = 0;
+    ls->pos = NULL;
+    return LUATEXTS_EBADDATA;
+  }
+
+  /* current character is a number and we have something to read */
+  while ((LUATEXTS_UINT)(*ls->pos - '0') < 10)
+  {
+    /* Are we about to overflow? */
+    if (LUATEXTS_UNLIKELY(k >= 429496729) && (k != 429496729 || *ls->pos > '5'))
+    {
+      ESPAM(("ltsLS_readuint10: value does not fit to uint32_t\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ETOOHUGE;
+    }
+
+    k = k * 10u + (LUATEXTS_UINT)(*ls->pos - '0');
+
+    if (LUATEXTS_UNLIKELY(ls->unread == 0))
+    {
+      ESPAM(("ltsLS_readuint10: clipped\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ECLIPPED;
+    }
+
+    ++ls->pos;
+    --ls->unread;
+  }
+
+  if (*ls->pos == '\r')
+  {
+    if (LUATEXTS_UNLIKELY(ls->unread == 0))
+    {
+      ESPAM(("ltsLS_readuint10: clipped\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ECLIPPED;
+    }
+
+    ++ls->pos;
+    --ls->unread;
+  }
+
+  if (LUATEXTS_UNLIKELY(*ls->pos != '\n'))
+  {
+    ESPAM(("ltsLS_readuint10: garbage\n"));
+    ls->unread = 0;
+    ls->pos = NULL;
+    return LUATEXTS_EGARBAGE;
+  }
+  else
+  {
+    if (LUATEXTS_UNLIKELY(ls->unread == 0))
+    {
+      ESPAM(("ltsLS_readuint10: clipped\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ECLIPPED;
+    }
+
+    ++ls->pos;
+    --ls->unread;
+  }
+
+  *dest = k;
 
   return LUATEXTS_ESUCCESS;
 }
@@ -560,11 +633,11 @@ static int load_table(lua_State * L, lts_LoadState * ls)
   LUATEXTS_UINT hash_size = 0;
   LUATEXTS_UINT total_size = 0;
 
-  int result = ltsLS_readuint(ls, &array_size, 10);
+  int result = ltsLS_readuint10(ls, &array_size);
 
   if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
-    result = ltsLS_readuint(ls, &hash_size, 10);
+    result = ltsLS_readuint10(ls, &hash_size);
   }
 
   if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
@@ -715,7 +788,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
         {
           LUATEXTS_UINT value;
 
-          result = ltsLS_readuint(ls, &value, 10);
+          result = ltsLS_readuint10(ls, &value);
           if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
@@ -756,7 +829,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
 
           /* Read string size */
           LUATEXTS_UINT len = 0;
-          result = ltsLS_readuint(ls, &len, 10);
+          result = ltsLS_readuint10(ls, &len);
 
           /* Check size */
           if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
@@ -810,7 +883,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
           /* Read string size */
           LUATEXTS_UINT len_chars = 0;
           size_t len_bytes = 0;
-          result = ltsLS_readuint(ls, &len_chars, 10);
+          result = ltsLS_readuint10(ls, &len_chars);
 
           /* Check size */
           if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
@@ -888,7 +961,7 @@ static int luatexts_load(
   * Motivation: too complicated; we will fail if buffer is too small anyway.
   */
 
-  result = ltsLS_readuint(&ls, &tuple_size, 10);
+  result = ltsLS_readuint10(&ls, &tuple_size);
   /* Check size */
   if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
