@@ -356,26 +356,26 @@ static int ltsLS_readline(
   )
 {
   const unsigned char * origin = ls->pos;
-  unsigned char last = 0;
+  const unsigned char * last = 0;
   size_t read = 0;
 
   while (ltsLS_good(ls))
   {
     if (ltsLS_unread(ls) > 0)
     {
-      unsigned char b = *ls->pos;
+      const unsigned char * cur = ls->pos;
       ++ls->pos;
       --ls->unread;
 
-      if (b == '\n')
+      if (*cur == '\n')
       {
         *dest = origin;
-        *len = (last == '\r') ? read - 1 : read;
+        *len = (*last == '\r') ? read - 1 : read;
 
         return LUATEXTS_ESUCCESS;
       }
 
-      last = b;
+      last = cur;
       ++read;
     }
     else
