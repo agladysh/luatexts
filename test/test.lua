@@ -75,7 +75,7 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
 
   ensure_error_with_substring(
       "negative size " .. NAME,
-      "load failed: value too huge",
+      "load failed: garbage before newline",
       luatexts.load('-1' .. NL)
     )
 
@@ -164,6 +164,17 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
   print("===== END core tests", NAME, "=====")
 
   for _, BASE in ipairs({ "U", "H", "Z" }) do
+    local PARAM =
+    ({
+      U =
+      {
+        max = '4294967295', trunc = '4294967296',
+        noneg = true, notrunc = true
+      };
+      H = { max = 'FFFFFFFF', trunc = '100000000' };
+      Z = { max = '1Z141Z3', trunc = '1Z141Z4' };
+    })[BASE]
+
     local NAME = BASE .. " " .. NAME
 
     print("===== BEGIN uint tests", NAME, "=====")
@@ -188,16 +199,28 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
           )
       )
 
-    -- strtoul supports negative numbers, why shouln't we?
-    ensure_returns(
-        "negative uint " .. NAME,
-        2, { true, 4294967295 }, -- Exact value is an implementation detail
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. '-1' .. NL
-          )
-      )
+    if not PARAM.noneg then
+      -- Implementation detail; should fail actually.
+      ensure_returns(
+          "negative uint " .. NAME,
+          2, { true, 4294967295 }, -- Exact value is an implementation detail
+          luatexts.load(
+              '1' .. NL
+           .. BASE .. NL
+             .. '-1' .. NL
+            )
+        )
+    else
+      ensure_error_with_substring(
+          "negative uint " .. NAME,
+          "load failed: garbage before newline",
+          luatexts.load(
+              '1' .. NL
+           .. BASE .. NL
+             .. '-1' .. NL
+            )
+        )
+    end
 
     ensure_error_with_substring(
         "fractional uint " .. NAME,
@@ -229,31 +252,35 @@ for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
           )
       )
 
-    do
-      local VALUES =
-      {
-        U = { max = '4294967295', trunc = '4294967296' };
-        H = { max = 'FFFFFFFF', trunc = '100000000' };
-        Z = { max = '1Z141Z3', trunc = '1Z141Z4' };
-      }
+    ensure_returns(
+        "huge uint " .. NAME,
+        2, { true, 4294967295 },
+        luatexts.load(
+            '1' .. NL
+         .. BASE .. NL
+           .. PARAM.max .. NL
+          )
+      )
 
-      ensure_returns(
-          "huge uint " .. NAME,
-          2, { true, 4294967295 },
-          luatexts.load(
-              '1' .. NL
-           .. BASE .. NL
-             .. VALUES[BASE].max .. NL
-            )
-        )
-
+    if not PARAM.notrunc then
+      -- Implementation detail; should fail actually.
       ensure_returns(
           "huge uint truncated " .. NAME,
           2, { true, 4294967295 }, -- implementation detail
           luatexts.load(
               '1' .. NL
            .. BASE .. NL
-             .. VALUES[BASE].trunc .. NL
+             .. PARAM.trunc .. NL
+            )
+        )
+    else
+      ensure_error_with_substring(
+          "huge uint: too huge " .. NAME,
+          "load failed: value too huge",
+          luatexts.load(
+              '1' .. NL
+           .. BASE .. NL
+             .. PARAM.trunc .. NL
             )
         )
     end

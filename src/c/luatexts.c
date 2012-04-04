@@ -86,7 +86,6 @@ typedef lua_Number LUATEXTS_NUMBER;
 typedef unsigned long LUATEXTS_UINT;
 
 #define luatexts_tonumber strtod
-#define luatexts_touint strtoul
 
 typedef struct lts_LoadState
 {
@@ -391,6 +390,47 @@ static int ltsLS_readline(
   return LUATEXTS_ECLIPPED;
 }
 
+static int luatexts_touint(
+    const char * data,
+    char ** endptr,
+    int base,
+    LUATEXTS_UINT * result
+  )
+{
+  if (base == 10)
+  {
+    /*
+      Not supporting leading '-' (this is unsigned int)
+      and not eating leading whitespace
+      (it is accidental that strtoul eats it,
+      luatexts format formally does not support this).
+
+      Loosely inspired by lj_str_numconv() from LuaJIT 2.
+    */
+    LUATEXTS_UINT k = 0;
+    while ((LUATEXTS_UINT)(*data - '0') < 10) /* is a number */
+    {
+      /* Are we about to overflow? */
+      if ((k >= 429496729) && (k != 429496729 || *data > '5'))
+      {
+        ESPAM(("luatexts_touint: value does not fit to uint32_t\n"));
+        return LUATEXTS_ETOOHUGE;
+      }
+
+      k = k * 10u + (LUATEXTS_UINT)(*data++ - '0');
+    }
+
+    *endptr = (char *)data;
+    *result = k;
+
+    return LUATEXTS_ESUCCESS;
+  }
+
+  *result = strtoul(data, endptr, base);
+
+  return LUATEXTS_ESUCCESS;
+}
+
 static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
 {
   size_t len = 0;
@@ -410,36 +450,43 @@ static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
     * at least one non-numeric trailing byte.
     */
     char * endptr = NULL;
-    LUATEXTS_UINT value = luatexts_touint((const char *)data, &endptr, base);
-    if ((const unsigned char *)endptr != data + len)
+    LUATEXTS_UINT value = 0;
+    result = luatexts_touint((const char *)data, &endptr, base, &value);
+
+    if (
+        result == LUATEXTS_ESUCCESS &&
+        (const unsigned char *)endptr != data + len
+      )
     {
+#if DO_XESPAM
       size_t i = 0;
+#endif /* DO_XESPAM */
+
       ESPAM((
           "readuint: garbage before eol: end %p start %p len %lu:\n",
           endptr, data, (long unsigned int)len
         ));
+
+#if DO_XESPAM
       for (i = 0; i < len; ++i)
       {
-        ESPAM((
-            " %c ", data[i]
-          ));
+        XESPAM((" %c ", data[i]));
         if (data + i == (const unsigned char *)endptr)
         {
-          ESPAM(("|  "));
+          XESPAM(("|  "));
         }
       }
-      ESPAM(("\n"));
+      XESPAM(("\n"));
       for (i = 0; i < len; ++i)
       {
-        ESPAM((
-            " %02X", data[i]
-          ));
+        XESPAM((" %02X", data[i]));
         if (data + i == (const unsigned char *)endptr)
         {
-          ESPAM(("|  "));
+          XESPAM(("|  "));
         }
       }
-      ESPAM(("\n"));
+      XESPAM(("\n"));
+#endif /* DO_XESPAM */
       result = LUATEXTS_EGARBAGE;
     }
     else
