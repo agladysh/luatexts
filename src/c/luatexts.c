@@ -745,28 +745,75 @@ static int load_value(lua_State * L, lts_LoadState * ls)
   size_t len = 0;
   const unsigned char * type = NULL;
 
-  /* Read value type */
-  int result = ltsLS_readline(ls, &type, &len);
-  if (
-      LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS)
-        && LUATEXTS_UNLIKELY(len != 1)
-    )
+  int result = LUATEXTS_ESUCCESS;
+
+  if (!ltsLS_good(ls))
   {
-    ESPAM(("load_value: failed to read value type line\n"));
-    result = LUATEXTS_EGARBAGE;
+    ESPAM(("load_value: clipped\n"));
+    return LUATEXTS_ECLIPPED;
   }
 
-  /* Read value data */
+  /* Read value type */
+  type = ls->pos;
+
+  /* TODO: Get rid of this ugly copy-paste in all code */
+  if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) == 0))
+  {
+    ESPAM(("load_value: clipped\n"));
+    ls->unread = 0;
+    ls->pos = NULL;
+    return LUATEXTS_ECLIPPED;
+  }
+
+  ++ls->pos;
+  --ls->unread;
+
+  if (*ls->pos == '\r')
+  {
+    if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) == 0))
+    {
+      ESPAM(("load_value: clipped\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ECLIPPED;
+    }
+
+    ++ls->pos;
+    --ls->unread;
+  }
+
+  if (LUATEXTS_UNLIKELY(*ls->pos != '\n'))
+  {
+    ESPAM(("load_value: clipped/garbage\n"));
+    ls->unread = 0;
+    ls->pos = NULL;
+    return LUATEXTS_ECLIPPED;
+  }
+  else
+  {
+    if (LUATEXTS_UNLIKELY(ltsLS_unread(ls) == 0))
+    {
+      ESPAM(("load_value: clipped\n"));
+      ls->unread = 0;
+      ls->pos = NULL;
+      return LUATEXTS_ECLIPPED;
+    }
+
+    ++ls->pos;
+    --ls->unread;
+  }
+
+  /* Read value data if any, and push the value to Lua state */
   if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
   {
     SPAM((
         "load_value: value type '%c' 0x%X (%d)\n",
-        isgraph(type[0]) ? type[0] : '?', type[0], type[0]
+        isgraph(*type) ? *type : '?', *type, *type
       ));
 
     luaL_checkstack(L, 1, "load-value");
 
-    switch (type[0])
+    switch (*type)
     {
       case LUATEXTS_CNIL:
         lua_pushnil(L);

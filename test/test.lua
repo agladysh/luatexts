@@ -1938,7 +1938,7 @@ end)()
 
   ensure_error_with_substring(
       "table, garbage after sizes " .. NAME,
-      "load failed: garbage before newline",
+      "load failed: corrupt data, truncated",
       luatexts.load(
           '1' .. NL
        .. 'T' .. NL
