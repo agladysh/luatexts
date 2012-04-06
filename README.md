@@ -304,12 +304,23 @@ implementation of luatexts data serializer.
 
   Serializes given data tuple. Returns `nil, err` on error.
 
+  Uses fixed-table data type to serialize tables.
+
   Issues:
 
   * Throws `error()` on self-referencing tables.
   * Asserts if detects non-serializable value inside a table.
 
   (Both issues to be fixed in later revisions.)
+
+* `luatexts_lua.save_cat(cat : function, ...) : cat / nil, err`
+
+  Serializes given data tuple to `cat()` function. Throws on error.
+
+      cat(v : string|number) : cat
+
+  Uses streaming-friendly-table data type to serialize tables.
+  Useful for serialization to streams (e.g. files / `stdout`).
 
 ### JavaScript
 
