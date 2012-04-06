@@ -68,9 +68,14 @@ else
   error("unknown mode")
 end
 
-print("PREFIX:", PREFIX)
-print("OFFSET:", OFFSET)
-print("MODE:", MODE)
+io.stderr:write(
+    "replay.lua:",
+    " PREFIX: ", PREFIX,
+    " OFFSET: ", OFFSET,
+    " MODE: ", MODE,
+    "\n"
+  )
+io.stderr:flush()
 
 --------------------------------------------------------------------------------
 
