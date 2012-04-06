@@ -106,6 +106,17 @@ The luatexts format is defined as follows:
               <hash-key-N>
               <hash-value-N>
 
+* Streaming-friendly table
+  * type: `t`
+  * data:
+
+              <key-1>\n
+              <value-1>\n
+              ...
+              <hash-key-N>
+              <hash-value-N>
+              <nil-value>
+
 ### Notes on table data type:
 
 * Nested tables are supported;
