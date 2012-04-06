@@ -5,8 +5,6 @@ require = import 'lua-nucleo/require_and_declare.lua' { 'require_and_declare' }
 
 math.randomseed(12345)
 
-local luatexts = require 'luatexts'
-
 local ensure,
       ensure_equals,
       ensure_tequals,
@@ -59,6 +57,20 @@ inf = 1/0
 
 local PREFIX = select(1, ...) or "tmp"
 local OFFSET = tonumber(select(2, ...) or 1) or 1
+local MODE = (select(3, ...) or "c"):lower()
+
+local luatexts
+if MODE == "c" then
+  luatexts = require 'luatexts'
+elseif MODE == "lua" then
+  luatexts = require 'luatexts.lua'
+else
+  error("unknown mode")
+end
+
+print("PREFIX:", PREFIX)
+print("OFFSET:", OFFSET)
+print("MODE:", MODE)
 
 --------------------------------------------------------------------------------
 
