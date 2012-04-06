@@ -6,7 +6,6 @@ require = import 'lua-nucleo/require_and_declare.lua' { 'require_and_declare' }
 math.randomseed(12345)
 
 local luatexts = require 'luatexts'
-local luatexts_lua = require 'luatexts.lua'
 
 local ensure,
       ensure_equals,
@@ -63,18 +62,18 @@ local OFFSET = tonumber(select(2, ...) or 1) or 1
 
 --------------------------------------------------------------------------------
 
-local filenames = find_all_files("tmp", ".*%.luatexts$")
+local filenames = find_all_files(PREFIX, ".*%d+%.luatexts$")
 table.sort(filenames)
 
 local n_str
 
 for i = 1, #filenames do
   local filename = filenames[i]
-  n_str = assert(filename:match("^tmp/(%d+).luatexts$"))
+  n_str = assert(filename:match("^"..PREFIX.."/(%d+).luatexts$"))
 
   local n = assert(tonumber(n_str, 10))
   if n >= OFFSET then
-    local tuple, tuple_size = assert(dofile("tmp/"..n_str..".lua"))
+    local tuple, tuple_size = assert(dofile(PREFIX.."/"..n_str..".lua"))
     local data = assert(read_file(filename))
 
     ensure_returns(
