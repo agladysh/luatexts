@@ -67,29 +67,29 @@ The luatexts format is defined as follows:
   * data: *(none)*
 * Number (double)
   * type: `N`
-  * data: *plain string representation, readable by `strtod`*
-* Number (unsigned integer, base 10)
+  * data: *plain string representation, readable by `strtod`*\n
+* Number (unsigned integer, base 10, max: 4294967295)
   * type: `U`
-  * data: *plain string representation, readable by `strtoul`*
-* Number (unsigned integer, base 16)
+  * data: *[0-9]+*\n
+* Number (unsigned integer, base 16, max: 4294967295)
   * type: `H`
-  * data: *plain string representation, readable by `strtoul`*
-* Number (unsigned integer, base 36)
+  * data: *plain string representation, readable by `strtoul`*\n
+* Number (unsigned integer, base 36, max: 4294967295)
   * type: `Z`
-  * data: *plain string representation, readable by `strtoul`*
+  * data: *plain string representation, readable by `strtoul`*\n
 * String (regular)
   * type: `S`
   * data:
 
               <unsigned-data-base-10:size-in-bytes>\n
-              <string-data, "binary" stuff supported>
+              <string-data, "binary" stuff supported>\n
 
 * String (UTF-8)
   * type: `8`
   * data:
 
               <unsigned-data-base-10:length-in-codepoints>\n
-              <string-data, only valid UTF-8 supported, without BOM>
+              <string-data, only valid UTF-8 supported, without BOM>\n
 
 * Table
   * type: `T`
@@ -99,11 +99,11 @@ The luatexts format is defined as follows:
               <unsigned-data-base-10:hash-size-hint>\n
               <array-item-1>\n
               ...
-              <array-item-N>\n
-              <hash-key-1>\n
-              <hash-value-1>\n
+              <array-item-N>
+              <hash-key-1>
+              <hash-value-1>
               ...
-              <hash-key-N>\n
+              <hash-key-N>
               <hash-value-N>
 
 ### Notes on table data type:
