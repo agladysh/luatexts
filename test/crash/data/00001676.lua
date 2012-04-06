@@ -1,0 +1,1 @@
+return {inf,42,inf},3

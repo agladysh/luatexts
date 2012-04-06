@@ -1,0 +1,1 @@
+return {[2]=42,[3]=false,[4]=0,[5]="luatexts",[6]=true,[7]="luatexts"},7

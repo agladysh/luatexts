@@ -1,0 +1,1 @@
+return {false,{"",inf,0,inf,false,true,false,-831,luatexts=407,[true]=true,[inf]="",[false]="",[3.140000000000000124344978758017532527446746826171875]=false},true,"",false},5

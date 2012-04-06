@@ -1,0 +1,1 @@
+return {{0,[0]=0,[3]="luatexts",[4]=0,[5]=inf,[6]=inf,[42]=-782,[true]=true,[{}]="luatexts",["(nil)"]=42},true,"luatexts"},3

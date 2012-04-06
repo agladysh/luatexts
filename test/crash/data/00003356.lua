@@ -1,0 +1,1 @@
+return {42,"","luatexts"},3

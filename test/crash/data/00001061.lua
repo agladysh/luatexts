@@ -1,0 +1,1 @@
+return {false,true,inf,-744,false,-536,[8]=-286},8

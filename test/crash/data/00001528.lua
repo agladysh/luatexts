@@ -1,0 +1,1 @@
+return {inf,{42,[0]={true,"luatexts",luatexts=42,[""]="luatexts"},[3]=0,[""]=0.155686097475492335462377013755030930042266845703125,luatexts="luatexts"},0},3

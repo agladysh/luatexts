@@ -1,0 +1,1 @@
+return {0,42,inf,[5]=true,[6]=inf,[8]=true,[9]="luatexts"},9

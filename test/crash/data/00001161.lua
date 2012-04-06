@@ -1,0 +1,1 @@
+return {{},inf,true},3

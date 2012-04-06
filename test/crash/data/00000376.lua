@@ -1,0 +1,1 @@
+return {false,"",inf,[5]={}},5

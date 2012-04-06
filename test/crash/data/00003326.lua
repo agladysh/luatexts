@@ -1,0 +1,1 @@
+return {inf,true,inf,-348,inf,true,42,false,42},9

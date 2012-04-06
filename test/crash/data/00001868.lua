@@ -1,0 +1,1 @@
+return {true,0,{},false,inf,false},6

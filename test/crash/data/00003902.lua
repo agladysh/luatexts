@@ -1,0 +1,1 @@
+return {{},42,inf,-597,42,"luatexts"},7

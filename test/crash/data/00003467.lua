@@ -1,0 +1,1 @@
+return {true,0,false,42,0,""},6

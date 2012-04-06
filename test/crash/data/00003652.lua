@@ -1,0 +1,1 @@
+return {{},true,"",false,false,false,[8]=42},8

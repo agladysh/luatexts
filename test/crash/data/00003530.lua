@@ -1,0 +1,1 @@
+return {[2]=42,[3]=false,[4]=true},6

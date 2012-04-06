@@ -1,0 +1,1 @@
+return {false,-574,42,inf,[6]=42,[7]=false},7

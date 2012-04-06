@@ -1,0 +1,1 @@
+return {false,false,[4]=42},4

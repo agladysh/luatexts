@@ -1,0 +1,1 @@
+return {42,[3]=true,[4]=inf,[5]=inf,[6]=inf,[7]=true,[8]=false},8

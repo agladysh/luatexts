@@ -1,0 +1,1 @@
+return {313,true,inf,inf},5

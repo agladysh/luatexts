@@ -1,0 +1,1 @@
+return {true,inf,false,inf,true,[7]=inf},7

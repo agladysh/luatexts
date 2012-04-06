@@ -1,0 +1,1 @@
+return {false,false,"","","luatexts",[7]="",[8]={},[9]=inf,[10]=inf},10

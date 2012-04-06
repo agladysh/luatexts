@@ -1,0 +1,1 @@
+return {inf,inf,-990},3

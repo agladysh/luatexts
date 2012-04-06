@@ -1,0 +1,1 @@
+return {0,[3]=true,[4]=false,[5]=false,[6]=inf,[7]=false,[8]="",[9]=true},9
