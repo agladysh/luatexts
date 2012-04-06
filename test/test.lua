@@ -38,6 +38,8 @@ local tset = import 'lua-nucleo/table-utils.lua' { 'tset' }
 
 local tpretty = import 'lua-nucleo/tpretty.lua' { 'tpretty' }
 
+local tserialize = import 'lua-nucleo/tserialize.lua' { 'tserialize' }
+
 --------------------------------------------------------------------------------
 
 for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
@@ -2205,6 +2207,9 @@ end)()
     local mutated_ok = 0
     local mutated_fail = 0
 
+    local C = 1
+    assert(os.execute("rm tmp/*"))
+
     local num_steps = 1e4
     for i = 1, num_steps do
       if i % 500 == 0 --[[or (i >= 8732 and NL == "\n")--]] then
@@ -2218,6 +2223,17 @@ end)()
       end
 
       local data = ensure("save", luatexts_lua.save(unpack(tuple, 1, n)))
+
+      local N = ("%08d"):format(C)
+      local f = assert(io.open("tmp/".. N .. ".lua", "w"))
+      f:write(
+          tserialize(tuple), ",", n
+        )
+      f:close()
+      local f = assert(io.open("tmp/".. N .. ".luatexts", "w"))
+      f:write(data)
+      f:close()
+      C = C + 1
 
       --[[
       print("dataset #" .. i .. ", " .. #data .. " bytes")
