@@ -239,7 +239,7 @@ Luatexts does not do that for you.
 Mini-FAQ
 --------
 
-1. Why no `save()` in Lua and no `load()` in other language versions?
+1. Why no `load()` in other language versions?
 
     Did not have time to write them yet. Do not need them personally,
     because I always try to feed the data to the consumer
@@ -321,6 +321,11 @@ implementation of luatexts data serializer.
 
   Uses streaming-friendly-table data type to serialize tables.
   Useful for serialization to streams (e.g. files / `stdout`).
+
+* `luatexts_lua.load(data : string) : true, ... / nil, err`
+
+  Returns unserialized data tuple (as multiple return values).
+  Tuples may be of zero values.
 
 ### JavaScript
 
