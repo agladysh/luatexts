@@ -91,13 +91,13 @@ The luatexts format is defined as follows:
               <unsigned-data-base-10:length-in-codepoints>\n
               <string-data, only valid UTF-8 supported, without BOM>\n
 
-* Table
+* Fixed-size table
   * type: `T`
   * data:
 
-              <unsigned-data-base-10:array-size-hint>\n
-              <unsigned-data-base-10:hash-size-hint>\n
-              <array-item-1>\n
+              <unsigned-data-base-10:array-size>\n
+              <unsigned-data-base-10:hash-size>\n
+              <array-item-1>
               ...
               <array-item-N>
               <hash-key-1>
@@ -115,10 +115,6 @@ The luatexts format is defined as follows:
   (but decoder must support both);
 * array part may include `nil` values (hash values may be `nil` as well);
 * table keys may not be `NaN` or `nil`.
-
-As an exception to simplify serialization to streams, it is allowed to specify
-array and / or hash size as 0 if it is unknown beforehand.
-This is not recommended, as it would lead to slower load times.
 
 ### Examples
 
