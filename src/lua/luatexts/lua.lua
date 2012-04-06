@@ -48,34 +48,43 @@ do
     end
     visited[t] = true
 
-    cat "T" "\n"
+    if buf then
+      cat "T" "\n"
 
-    local array_size = #t
-    cat (array_size) "\n"
+      local array_size = #t
+      cat (array_size) "\n"
 
-    local hash_size_pos = buf and #buf + 1 or nil
-    cat ("0") "\n" -- Would be left as 0 if save_cat is used
+      local hash_size_pos = #buf + 1
+      cat ("?") "\n"
 
-    for i = 1, array_size do
-      handle_value(cat, t[i], visited, buf)
-    end
+      for i = 1, array_size do
+        handle_value(cat, t[i], visited, buf)
+      end
 
-    local hash_size = 0
-    for k, v in pairs(t) do
-      if
-        type(k) ~= "number" or
-        k > array_size or k < 1 or -- integer key in hash part of the table
-        k % 1 ~= 0 -- non-integer key
-      then
-        hash_size = hash_size + 1
-        -- TODO: return nil, err on failure instead of asserting
+      local hash_size = 0
+      for k, v in pairs(t) do
+        if
+          type(k) ~= "number" or
+          k > array_size or k < 1 or -- integer key in hash part of the table
+          k % 1 ~= 0 -- non-integer key
+        then
+          hash_size = hash_size + 1
+          -- TODO: return nil, err on failure instead of asserting
+          assert(handle_value(cat, k, visited, buf))
+          assert(handle_value(cat, v, visited, buf))
+        end
+      end
+
+      buf[hash_size_pos] = hash_size
+    else -- Streaming mode
+      cat "t" "\n"
+
+      for k, v in pairs(t) do
         assert(handle_value(cat, k, visited, buf))
         assert(handle_value(cat, v, visited, buf))
       end
-    end
 
-    if buf then
-      buf[hash_size_pos] = hash_size
+      handle_value(cat, nil, visited, buf)
     end
 
     visited[t] = nil
