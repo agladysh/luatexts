@@ -78,16 +78,17 @@ extern "C" {
 #define LUATEXTS_EBADUTF8 (7)
 #define LUATEXTS_ECLIPPED (8)
 
-#define LUATEXTS_CNIL        '-' /* 0x2D (45) */
-#define LUATEXTS_CFALSE      '0' /* 0x30 (48) */
-#define LUATEXTS_CTRUE       '1' /* 0x31 (49) */
-#define LUATEXTS_CNUMBER     'N' /* 0x4E (78) */
-#define LUATEXTS_CUINT       'U' /* 0x55 (85) */
-#define LUATEXTS_CUINTHEX    'H' /* 0x48 (48) */
-#define LUATEXTS_CUINT36     'Z' /* 0x5A (90) */
-#define LUATEXTS_CSTRING     'S' /* 0x53 (83) */
-#define LUATEXTS_CTABLE      'T' /* 0x54 (84) */
-#define LUATEXTS_CSTRINGUTF8 '8' /* 0x38 (56) */
+#define LUATEXTS_CNIL         '-' /* 0x2D (45)  */
+#define LUATEXTS_CFALSE       '0' /* 0x30 (48)  */
+#define LUATEXTS_CTRUE        '1' /* 0x31 (49)  */
+#define LUATEXTS_CNUMBER      'N' /* 0x4E (78)  */
+#define LUATEXTS_CUINT        'U' /* 0x55 (85)  */
+#define LUATEXTS_CUINTHEX     'H' /* 0x48 (48)  */
+#define LUATEXTS_CUINT36      'Z' /* 0x5A (90)  */
+#define LUATEXTS_CSTRING      'S' /* 0x53 (83)  */
+#define LUATEXTS_CFIXEDTABLE  'T' /* 0x54 (84)  */
+#define LUATEXTS_CSTREAMTABLE 't' /* 0x74 (116) */
+#define LUATEXTS_CSTRINGUTF8  '8' /* 0x38 (56)  */
 
 /* WARNING: Make sure these match your luaconf.h */
 typedef lua_Number LUATEXTS_NUMBER;
@@ -635,7 +636,10 @@ static int ltsLS_readnumber(lts_LoadState * ls, LUATEXTS_NUMBER * dest)
 
 static int load_value(lua_State * L, lts_LoadState * ls);
 
-static int load_table(lua_State * L, lts_LoadState * ls)
+/*
+* TODO: generalize with load_stream_table.
+*/
+static int load_fixed_table(lua_State * L, lts_LoadState * ls)
 {
   LUATEXTS_UINT array_size = 0;
   LUATEXTS_UINT hash_size = 0;
@@ -662,13 +666,13 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         ltsLS_unread(ls) < (array_size + hash_size * 2)
       ))
     {
-      ESPAM(("load_table: too huge\n"));
+      ESPAM(("load_fixed_table: too huge\n"));
       result = LUATEXTS_ETOOHUGE;
     }
   }
 
   SPAM((
-      "load_table: size: %lu array + %lu hash = %lu total\n",
+      "load_fixed_table: size: %lu array + %lu hash = %lu total\n",
       array_size, hash_size, total_size
     ));
 
@@ -683,7 +687,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
       result = load_value(L, ls); /* Load value. */
       if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
       {
-        ESPAM(("load_table: failed to read array part value\n"));
+        ESPAM(("load_fixed_table: failed to read array part value\n"));
         break;
       }
 
@@ -699,7 +703,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         result = load_value(L, ls); /* Load key. */
         if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
         {
-          ESPAM(("load_table: failed to read key\n"));
+          ESPAM(("load_fixed_table: failed to read key\n"));
           break;
         }
 
@@ -708,7 +712,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         if (LUATEXTS_UNLIKELY(key_type == LUA_TNIL))
         {
           /* Corrupt data? */
-          ESPAM(("load_table: key is nil\n"));
+          ESPAM(("load_fixed_table: key is nil\n"));
           result = LUATEXTS_EBADDATA;
           break;
         }
@@ -719,7 +723,7 @@ static int load_table(lua_State * L, lts_LoadState * ls)
           if (LUATEXTS_UNLIKELY(luai_numisnan(key)))
           {
             /* Corrupt data? */
-            ESPAM(("load_table: key is nan\n"));
+            ESPAM(("load_fixed_table: key is nan\n"));
             result = LUATEXTS_EBADDATA;
             break;
           }
@@ -728,13 +732,67 @@ static int load_table(lua_State * L, lts_LoadState * ls)
         result = load_value(L, ls); /* Load value. */
         if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
         {
-          ESPAM(("load_table: failed to read value\n"));
+          ESPAM(("load_fixed_table: failed to read value\n"));
           break;
         }
 
         lua_rawset(L, -3);
       }
     }
+  }
+
+  return result;
+}
+
+/*
+* TODO: generalize with load_fixed_table.
+*/
+static int load_stream_table(lua_State * L, lts_LoadState * ls)
+{
+  int result = LUATEXTS_ESUCCESS;
+
+  lua_newtable(L);
+
+  while (result == LUATEXTS_ESUCCESS)
+  {
+    int key_type = LUA_TNONE;
+
+    result = load_value(L, ls); /* Load key. */
+    if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
+    {
+      ESPAM(("load_stream_table: failed to read key\n"));
+      break;
+    }
+
+    /* If "key" is nil, this is the end of table (no value expected). */
+    key_type = lua_type(L, -1);
+    if (key_type == LUA_TNIL)
+    {
+      lua_pop(L, 1); /* Pop terminating nil */
+      break;
+    }
+
+    /* Table key can't be NaN */
+    if (key_type == LUA_TNUMBER)
+    {
+      lua_Number key = lua_tonumber(L, -1);
+      if (LUATEXTS_UNLIKELY(luai_numisnan(key)))
+      {
+        /* Corrupt data? */
+        ESPAM(("load_stream_table: key is nan\n"));
+        result = LUATEXTS_EBADDATA;
+        break;
+      }
+    }
+
+    result = load_value(L, ls); /* Load value. */
+    if (LUATEXTS_UNLIKELY(result != LUATEXTS_ESUCCESS))
+    {
+      ESPAM(("load_stream_table: failed to read value\n"));
+      break;
+    }
+
+    lua_rawset(L, -3);
   }
 
   return result;
@@ -980,8 +1038,12 @@ static int load_value(lua_State * L, lts_LoadState * ls)
         }
         break;
 
-      case LUATEXTS_CTABLE:
-        result = load_table(L, ls);
+      case LUATEXTS_CFIXEDTABLE:
+        result = load_fixed_table(L, ls);
+        break;
+
+      case LUATEXTS_CSTREAMTABLE:
+        result = load_stream_table(L, ls);
         break;
 
       default:
