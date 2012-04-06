@@ -47,10 +47,10 @@ The luatexts format is defined as follows:
 
     <unsigned-data-base-10:tuple-size>\n
     <type1>\n
-    <data1>\n
+    <data1>
     ...
     <typeN>\n
-    <dataN>\n
+    <dataN>
 
 *`\n` here and below may be either `LF` or `CRLF`*
 
