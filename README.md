@@ -247,9 +247,11 @@ Mini-FAQ
 
 2. What if I need one of these missing functions?
 
-    * Use luabins or other feature-complete serialization library.
-    * Write it yourself (it is easy!) and send me a pull request.
-    * Ask me nicely.
+   * Use luabins or other feature-complete serialization library.
+
+   * Write it yourself (it is easy!) and send @agladysh a pull request.
+
+   * Ask @agladysh nicely.
 
 3. When to use luatexts and when luabins?
 
