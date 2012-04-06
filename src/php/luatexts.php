@@ -1,5 +1,5 @@
 <?php
-// LUATEXTS PHP module (v. 0.1.3)
+// LUATEXTS PHP module (v. 0.1.4)
 // https://github.com/agladysh/luatexts/
 // Copyright (c) LUATEXTS authors. Licensed under the terms of the MIT license:
 // https://github.com/agladysh/luatexts/tree/master/COPYRIGHT

@@ -393,7 +393,7 @@ end
 
 return
 {
-  _VERSION = "luatexts-lua 0.1.3";
+  _VERSION = "luatexts-lua 0.1.4";
   _COPYRIGHT = "Copyright (C) 2011-2012, luatexts authors";
   _DESCRIPTION = "Trivial Lua human-readable binary-safe serialization library";
   --

@@ -1,3 +1,20 @@
+Version 0.1.4 (To be released)
+==============================
+
+* New data types:
+  * Stream-friendly table
+  * Unsigned integer, base 16
+  * Unsigned integer, base 36
+* New C module function: `load_from_file(filename)`
+* C `load()` now handles unsigned integers up to 4294967295
+* New Lua module functions:
+  * `load()`
+  * `save_cat()` to save to streams (files, stdout etc.)
+* UTF-8 string length is given in codepoints, not characters
+* Optimized C code, especially unsigned integer base 10
+* Some improvements in documentation
+* Some improvements in implementation
+
 Version 0.1.3 (2011-06-03)
 ==========================
 
