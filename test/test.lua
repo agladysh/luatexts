@@ -42,617 +42,8 @@ local tserialize = import 'lua-nucleo/tserialize.lua' { 'tserialize' }
 
 --------------------------------------------------------------------------------
 
-for NAME, NL in pairs { LF = "\n", CRLF = "\r\n" } do
-  print("===== BEGIN core tests", NAME, "=====")
-
-  ensure_fails_with_substring(
-      "load without args",
-      function() return luatexts.load() end,
-      "bad argument #1 to '.*' %(string expected, got no value%)"
-    )
-
-  ensure_error_with_substring(
-      "empty string",
-      "load failed: corrupt data, truncated",
-      luatexts.load('')
-    )
-
-  ensure_returns(
-      "zero-sized tuple " .. NAME,
-      1, { true },
-      luatexts.load('0' .. NL)
-    )
-
-  ensure_returns(
-      "zero-sized tuple tail garbage ignored" .. NAME,
-      1, { true },
-      luatexts.load('0' .. NL .. "yada yada!")
-    )
-
-  ensure_error_with_substring(
-      "no data " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load('' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "negative size " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load('-1' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "tuple size too large (empty) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load('1' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "tuple size, no newline",
-      "load failed: garbage before newline",
-      luatexts.load('1')
-    )
-
-  ensure_returns(
-      "nil " .. NAME,
-      2, { true, nil },
-      luatexts.load('1' .. NL .. '-' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "no newline after type " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load('1' .. NL .. '-')
-    )
-  ensure_error_with_substring(
-      "tuple size too large (nil) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load('2' .. NL .. '-' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "fractional tuple size " .. NAME,
-      "load failed: garbage before newline",
-      luatexts.load('3.14' .. NL .. '-' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "bad type " .. NAME,
-      "load failed: unknown data type",
-      luatexts.load('1' .. NL .. 'X' .. NL)
-    )
-
-  ensure_error_with_substring(
-      "no newline after type " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load('1' .. NL .. '-')
-    )
-
-  ensure_error_with_substring(
-      "no newline after type and garbage " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load('1' .. NL .. '- yada yada')
-    )
-
-  ensure_returns(
-      "nil tail garbage ignored " .. NAME,
-      2, { true, nil },
-      luatexts.load('1' .. NL .. '-' .. NL .. "yada yada!")
-    )
-
-  ensure_returns(
-      "false " .. NAME,
-      2, { true, false },
-      luatexts.load('1' .. NL .. '0' .. NL)
-    )
-
-  ensure_returns(
-      "true " .. NAME,
-      2, { true, true },
-      luatexts.load('1' .. NL .. '1' .. NL)
-    )
-
-  ensure_returns(
-      "true-nil-false " .. NAME,
-      4, { true, true, nil, false },
-      luatexts.load(
-          '3' .. NL
-       .. '1' .. NL
-       .. '-' .. NL
-       .. '0' .. NL
-        )
-    )
-
-  print("===== END core tests", NAME, "=====")
-
-  for _, BASE in ipairs({ "U", "H", "Z" }) do
-    local PARAM =
-    ({
-      U =
-      {
-        max = '4294967295', trunc = '4294967296',
-        noneg = true, notrunc = true
-      };
-      H = { max = 'FFFFFFFF', trunc = '100000000' };
-      Z = { max = '1Z141Z3', trunc = '1Z141Z4' };
-    })[BASE]
-
-    local NAME = BASE .. " " .. NAME
-
-    print("===== BEGIN uint tests", NAME, "=====")
-
-    ensure_returns(
-        "zero uint " .. NAME,
-        2, { true, 0 },
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. '0' .. NL
-          )
-      )
-
-    ensure_returns(
-        "one uint " .. NAME,
-        2, { true, 1 },
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. '1' .. NL
-          )
-      )
-
-    if not PARAM.noneg then
-      -- Implementation detail; should fail actually.
-      ensure_returns(
-          "negative uint " .. NAME,
-          2, { true, 4294967295 }, -- Exact value is an implementation detail
-          luatexts.load(
-              '1' .. NL
-           .. BASE .. NL
-             .. '-1' .. NL
-            )
-        )
-    else
-      -- Exact error message is an implementation detail
-      ensure_error_with_substring(
-          "negative uint " .. NAME,
-          "load failed: corrupt data",
-          luatexts.load(
-              '1' .. NL
-           .. BASE .. NL
-             .. '-1' .. NL
-            )
-        )
-    end
-
-    ensure_error_with_substring(
-        "fractional uint " .. NAME,
-        "load failed: garbage before newline",
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. '1.1' .. NL
-          )
-      )
-
-    ensure_error_with_substring(
-        "uint: missing newline " .. NAME,
-        "load failed: ", --corrupt data, truncated",
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. '1'
-          )
-      )
-
-    ensure_error_with_substring(
-        "uint: missing newline and garbage " .. NAME,
-        "load failed: ", -- corrupt data, truncated",
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. '1 yada yada'
-          )
-      )
-
-    ensure_returns(
-        "huge uint " .. NAME,
-        2, { true, 4294967295 },
-        luatexts.load(
-            '1' .. NL
-         .. BASE .. NL
-           .. PARAM.max .. NL
-          )
-      )
-
-    if not PARAM.notrunc then
-      -- Implementation detail; should fail actually.
-      ensure_returns(
-          "huge uint truncated " .. NAME,
-          2, { true, 4294967295 }, -- implementation detail
-          luatexts.load(
-              '1' .. NL
-           .. BASE .. NL
-             .. PARAM.trunc .. NL
-            )
-        )
-    else
-      ensure_error_with_substring(
-          "huge uint: too huge " .. NAME,
-          "load failed: value too huge",
-          luatexts.load(
-              '1' .. NL
-           .. BASE .. NL
-             .. PARAM.trunc .. NL
-            )
-        )
-    end
-
-    print("===== END uint tests", NAME, "=====")
-  end
-  print("===== BEGIN number tests", NAME, "=====")
-
-  ensure_returns(
-      "number zero " .. NAME,
-      2, { true, 0 },
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '0' .. NL
-        )
-    )
-
-  ensure_returns(
-      "number one " .. NAME,
-      2, { true, 1 },
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '1' .. NL
-        )
-    )
-
-  ensure_returns(
-      "number pi " .. NAME,
-      2, { true, 3.141592653589793115997963468544185161590576171875 },
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '3.141592653589793115997963468544185161590576171875' .. NL
-        )
-    )
-
-  ensure_returns(
-      "-number pi " .. NAME,
-      2, { true, -3.141592653589793115997963468544185161590576171875 },
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '-3.141592653589793115997963468544185161590576171875' .. NL
-        )
-    )
-
-  ensure_returns(
-      "inf " .. NAME,
-      2, { true, 1/0 },
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. 'inf' .. NL
-        )
-    )
-
-  ensure_returns(
-      "-inf " .. NAME,
-      2, { true, -1/0 },
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '-inf' .. NL
-        )
-    )
-
-  do
-    local ok, value = luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. 'nan' .. NL
-      )
-    ensure_equals("nan ok", ok, true)
-    ensure("nan value", value ~= value)
-  end
-
- ensure_error_with_substring(
-      "number: garbage " .. NAME,
-      "load failed: garbage before newline",
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '1.1 yada yada!' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "number: missing newline " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '1.1'
-        )
-    )
-
-  ensure_error_with_substring(
-      "number: missing newline and garbage " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'N' .. NL
-         .. '1.1 yada yada'
-        )
-    )
-
-  print("===== END number tests", NAME, "=====")
-  print("===== BEGIN string tests", NAME, "=====")
-
-  ensure_returns(
-      "empty string " .. NAME,
-      2, { true, "" },
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '0' .. NL
-         .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "empty string with data " .. NAME,
-      "load failed: garbage before newline",
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '0' .. NL
-         .. 'A' .. NL
-        )
-    )
-
-  ensure_returns(
-      "single char string " .. NAME,
-      2, { true, "A" },
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '1' .. NL
-         .. 'A' .. NL
-        )
-    )
-
-  ensure_returns(
-      "\\0 " .. NAME,
-      2, { true, "\0" },
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '1' .. NL
-         .. '\0' .. NL
-        )
-    )
-
-  ensure_returns(
-      "Embedded\\0Zero " .. NAME,
-      2, { true, "Embedded\0Zero" },
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '13' .. NL
-         .. 'Embedded\0Zero' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "empty string no second nl " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '0' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "string size too large (empty, no nl) " .. NAME,
-      "load failed: corrupt data, bad size",
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. '1' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "string size too large (empty, nl) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. (NL == "\r\n" and '2' or '1') .. NL
-         .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "string size too large (non-empty) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'S' .. NL
-         .. (NL == "\r\n" and '3' or '2') .. NL
-         .. 'A' .. NL
-        )
-    )
-
-  do
-    local len = 1 * 1024 * 1024 -- 1 MB
-
-    local s = (function()
-      local b = { }
-      for i = 1, len do
-        b[#b + 1] = string.char(math.random(0, 255))
-      end
-      return table.concat(b)
-    end)()
-
-    ensure_returns(
-        "Large binary garbage " .. NAME,
-        2, { true, s },
-        luatexts.load(
-            '1' .. NL
-         .. 'S' .. NL
-           .. len .. NL
-           .. s .. NL
-          )
-      )
-  end
-
-  print("===== END string tests", NAME, "=====")
-  print("===== BEGIN utf8 tests", NAME, "=====")
-
-  ensure_returns(
-      "empty utf8 " .. NAME,
-      2, { true, "" },
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '0' .. NL
-         .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "empty utf8 with data " .. NAME,
-      "load failed: garbage before newline",
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '0' .. NL
-         .. 'A' .. NL
-        )
-    )
-
-  ensure_returns(
-      "single char utf8 " .. NAME,
-      2, { true, "A" },
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '1' .. NL
-         .. 'A' .. NL
-        )
-    )
-
-  ensure_returns(
-      "\\0 utf8 " .. NAME,
-      2, { true, "\0" },
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '1' .. NL
-         .. '\0' .. NL
-        )
-    )
-
-  ensure_returns(
-      "Embedded\\0Zero utf8 " .. NAME,
-      2, { true, "Embedded\0Zero" },
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '13' .. NL
-         .. 'Embedded\0Zero' .. NL
-        )
-    )
-
-  ensure_returns(
-      "Встроенный\\0Ноль utf8 " .. NAME,
-      2, { true, "Встроенный\0Ноль" },
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '15' .. NL
-         .. 'Встроенный\0Ноль' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "empty utf8 no second nl " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '0' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "utf8 size too large (empty, no nl) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. '1' .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "utf8 size too large (empty, nl) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. (NL == "\r\n" and '2' or '1') .. NL
-         .. NL
-        )
-    )
-
-  ensure_error_with_substring(
-      "utf8 size too large (non-empty) " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. (NL == "\r\n" and '3' or '2') .. NL
-         .. 'A' .. NL
-        )
-    )
-
-  for i = 1, 1e3 do
-    local b = { }
-    for i = 1, 1024 do
-      b[#b + 1] = "A"
-    end
-
-    for i = 1, 10 do
-      b[math.random(1, #b)] = string.char(math.random(128, 255)) -- bad code
-    end
-
-    local s = table.concat(b)
-
-    -- There is a small probability that above code will generate correct UTF-8.
-    ensure_error_with_substring(
-        "bogus utf8 #" .. i .. " " .. NAME,
-        "load failed: invalid utf-8 data",
-        luatexts.load(
-            '1' .. NL
-         .. '8' .. NL
-           .. #s .. NL -- Note that size is also wrong
-           .. s .. NL
-          )
-      )
-  end
-
 -- This is this file: http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
-local TEST_DATA = (function() return
+local UTF8_TEST_DATA = (function() return
 "\085\084\070\045\056\032\100\101\099\111\100\101\114\032\099\097\112\097" ..
 "\098\105\108\105\116\121\032\097\110\100\032\115\116\114\101\115\115\032" ..
 "\116\101\115\116\010\045\045\045\045\045\045\045\045\045\045\045\045\045" ..
@@ -1790,507 +1181,1218 @@ end)() .. (function() return
 "\032\032\032\032\032\032\032\032\032\032\124\010"
 end)()
 
-  ensure_error_with_substring(
-      "whole utf-8 test data " .. NAME,
-      "load failed: invalid utf-8 data",
-      luatexts.load(
-          '1' .. NL
-       .. '8' .. NL
-         .. #TEST_DATA .. NL -- Note that size is also wrong
-         .. TEST_DATA .. NL
-        )
-    )
+--------------------------------------------------------------------------------
 
-  -- Lines with bad UTF-8 in the above document.
-  local expected_errors =
-  {
-    --
-    -- Original list of lines with bad UTF-8 sequences
-    --
-    102,  103,  105,  106,  107,  108,  109,  110,  114,  115,
-    116,  117,  124,  125,  130,  135,  140,  145,  153,  154,
-    155,  156,  157,  158,  159,  160,  161,  162,  169,  175,
-    176,  177,  207,  208,  209,  210,  211,  220,  221,  222,
-    223,  224,  232,  233,  234,  235,  236,  247,  248,  249,
-    250,  251,  252,  253,  257,  258,  259,  260,  261,  262,
-    263,  264,  268,  269;
-    --
-    -- Additional bad lines
-    -- TODO: Add more tests to compensate for these
-    --       (as some of this checks are for boundary conditions).
-    --
-    75; -- 5-byte sequence is illegal
-    76; -- 6-byte sequence is illegal
-    82; -- BOM non-character sequence is legitimately rejected by our reader
-    83; -- First byte 0xF7 (247) may not occur anywhere in valid UTF-8 byte seq.
-    84; -- 5-byte sequence is illegal
-    85; -- 6-byte sequence is illegal
-    93; -- Overlong form
-  }
+for LOAD_NAME, LOAD in pairs { C = luatexts.load, LUA = luatexts_lua.load } do
+  for NAME, NL in pairs {
+      [LOAD_NAME .. "-" .. "LF"] = "\n", [LOAD_NAME .. "-" .. "CRLF"] = "\r\n"
+    }
+  do
+    print("===== BEGIN core tests", NAME, "=====")
 
-  table.sort(expected_errors)
-
-  local lines = split_by_char(TEST_DATA, "\n")
-  local actual_errors = { }
-  for i = 1, #lines do
-    local res, err = luatexts.load(
-        '1' .. NL
-     .. '8' .. NL
-       .. (#lines[i] < 79 and #lines[i] or 79) .. NL
-       .. lines[i] .. NL
+    ensure_fails_with_substring(
+        "load without args",
+        function() return LOAD() end,
+        "bad argument #1 to '.-' %(string expected.-%)"
       )
-    if res then
-      ensure_equals("loaded", err, lines[i])
-    else
-      ensure_equals(
-          "correct error " .. i, err, "load failed: invalid utf-8 data"
+
+    ensure_error_with_substring(
+        "empty string",
+        "load failed: ",
+        LOAD('')
+      )
+
+    ensure_returns(
+        "zero-sized tuple " .. NAME,
+        1, { true },
+        LOAD('0' .. NL)
+      )
+
+    ensure_returns(
+        "zero-sized tuple tail garbage ignored" .. NAME,
+        1, { true },
+        LOAD('0' .. NL .. "yada yada!")
+      )
+
+    ensure_error_with_substring(
+        "no data " .. NAME,
+        "load failed: ",
+        LOAD('' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "negative size " .. NAME,
+        "load failed: ",
+        LOAD('-1' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "tuple size too large (empty) " .. NAME,
+        "load failed: ",
+        LOAD('1' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "tuple size, no newline",
+        "load failed: ",
+        LOAD('1')
+      )
+
+    ensure_returns(
+        "nil " .. NAME,
+        2, { true, nil },
+        LOAD('1' .. NL .. '-' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "no newline after type " .. NAME,
+        "load failed: ",
+        LOAD('1' .. NL .. '-')
+      )
+    ensure_error_with_substring(
+        "tuple size too large (nil) " .. NAME,
+        "load failed: ",
+        LOAD('2' .. NL .. '-' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "fractional tuple size " .. NAME,
+        "load failed: ",
+        LOAD('3.14' .. NL .. '-' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "bad type " .. NAME,
+        "load failed: ",
+        LOAD('1' .. NL .. 'X' .. NL)
+      )
+
+    ensure_error_with_substring(
+        "no newline after type " .. NAME,
+        "load failed: ",
+        LOAD('1' .. NL .. '-')
+      )
+
+    ensure_error_with_substring(
+        "no newline after type and garbage " .. NAME,
+        "load failed: ",
+        LOAD('1' .. NL .. '- yada yada')
+      )
+
+    ensure_returns(
+        "nil tail garbage ignored " .. NAME,
+        2, { true, nil },
+        LOAD('1' .. NL .. '-' .. NL .. "yada yada!")
+      )
+
+    ensure_returns(
+        "false " .. NAME,
+        2, { true, false },
+        LOAD('1' .. NL .. '0' .. NL)
+      )
+
+    ensure_returns(
+        "true " .. NAME,
+        2, { true, true },
+        LOAD('1' .. NL .. '1' .. NL)
+      )
+
+    ensure_returns(
+        "true-nil-false " .. NAME,
+        4, { true, true, nil, false },
+        LOAD(
+            '3' .. NL
+         .. '1' .. NL
+         .. '-' .. NL
+         .. '0' .. NL
+          )
+      )
+
+    print("===== END core tests", NAME, "=====")
+
+    for _, BASE in ipairs({ "U", "H", "Z" }) do
+      local PARAM =
+      ({
+        U =
+        {
+          max = '4294967295', trunc = '4294967296',
+          noneg = true, notrunc = true
+        };
+        H = { max = 'FFFFFFFF', trunc = '100000000' };
+        Z = { max = '1Z141Z3', trunc = '1Z141Z4' };
+      })[BASE]
+
+      local NAME = BASE .. " " .. NAME
+
+      print("===== BEGIN uint tests", NAME, "=====")
+
+      ensure_returns(
+          "zero uint " .. NAME,
+          2, { true, 0 },
+          LOAD(
+              '1' .. NL
+           .. BASE .. NL
+             .. '0' .. NL
+            )
         )
-      actual_errors[#actual_errors + 1] = i
+
+      ensure_returns(
+          "one uint " .. NAME,
+          2, { true, 1 },
+          LOAD(
+              '1' .. NL
+           .. BASE .. NL
+             .. '1' .. NL
+            )
+        )
+
+      if not PARAM.noneg then
+        -- Implementation detail; should fail actually.
+        ensure_returns(
+            "negative uint " .. NAME,
+            2, { true, 4294967295 }, -- Exact value is an implementation detail
+            LOAD(
+                '1' .. NL
+             .. BASE .. NL
+               .. '-1' .. NL
+              )
+          )
+      else
+        -- Exact error message is an implementation detail
+        ensure_error_with_substring(
+            "negative uint " .. NAME,
+            "load failed: ",
+            LOAD(
+                '1' .. NL
+             .. BASE .. NL
+               .. '-1' .. NL
+              )
+          )
+      end
+
+      ensure_error_with_substring(
+          "fractional uint " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. BASE .. NL
+             .. '1.1' .. NL
+            )
+        )
+
+      ensure_error_with_substring(
+          "uint: missing newline " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. BASE .. NL
+             .. '1'
+            )
+        )
+
+      ensure_error_with_substring(
+          "uint: missing newline and garbage " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. BASE .. NL
+             .. '1 yada yada'
+            )
+        )
+
+      ensure_returns(
+          "huge uint " .. NAME,
+          2, { true, 4294967295 },
+          LOAD(
+              '1' .. NL
+           .. BASE .. NL
+             .. PARAM.max .. NL
+            )
+        )
+
+      if not PARAM.notrunc then
+        -- Implementation detail; should fail actually.
+        ensure_returns(
+            "huge uint truncated " .. NAME,
+            2, { true, 4294967295 }, -- implementation detail
+            LOAD(
+                '1' .. NL
+             .. BASE .. NL
+               .. PARAM.trunc .. NL
+              )
+          )
+      else
+        ensure_error_with_substring(
+            "huge uint: too huge " .. NAME,
+            "load failed: ",
+            LOAD(
+                '1' .. NL
+             .. BASE .. NL
+               .. PARAM.trunc .. NL
+              )
+          )
+      end
+
+      print("===== END uint tests", NAME, "=====")
     end
-  end
-  ensure_tequals(
-      "failure lines must match expected",
-      actual_errors,
-      expected_errors
-    )
+    print("===== BEGIN number tests", NAME, "=====")
 
-  print("===== END utf8 tests", NAME, "=====")
-  print("===== BEGIN table tests", NAME, "=====")
+    ensure_returns(
+        "number zero " .. NAME,
+        2, { true, 0 },
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '0' .. NL
+          )
+      )
 
-  ensure_returns(
-      "empty table " .. NAME,
-      2, { true, { } },
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-         .. '0' .. NL
-         .. '0' .. NL
+    ensure_returns(
+        "number one " .. NAME,
+        2, { true, 1 },
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '1' .. NL
+          )
+      )
+
+    ensure_returns(
+        "number pi " .. NAME,
+        2, { true, 3.141592653589793115997963468544185161590576171875 },
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '3.141592653589793115997963468544185161590576171875' .. NL
+          )
+      )
+
+    ensure_returns(
+        "-number pi " .. NAME,
+        2, { true, -3.141592653589793115997963468544185161590576171875 },
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '-3.141592653589793115997963468544185161590576171875' .. NL
+          )
+      )
+
+    ensure_returns(
+        "inf " .. NAME,
+        2, { true, 1/0 },
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. 'inf' .. NL
+          )
+      )
+
+    ensure_returns(
+        "-inf " .. NAME,
+        2, { true, -1/0 },
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '-inf' .. NL
+          )
+      )
+
+    do
+      local ok, value = LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. 'nan' .. NL
         )
-    )
+      ensure_equals("nan ok", ok, true)
+      ensure("nan value", value ~= value)
+    end
 
-  ensure_returns(
-      "some data " .. NAME,
-      2,
+   ensure_error_with_substring(
+        "number: garbage " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '1.1 yada yada!' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "number: missing newline " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '1.1'
+          )
+      )
+
+    ensure_error_with_substring(
+        "number: missing newline and garbage " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'N' .. NL
+           .. '1.1 yada yada'
+          )
+      )
+
+    print("===== END number tests", NAME, "=====")
+    print("===== BEGIN string tests", NAME, "=====")
+
+    ensure_returns(
+        "empty string " .. NAME,
+        2, { true, "" },
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '0' .. NL
+           .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "empty string with data " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '0' .. NL
+           .. 'A' .. NL
+          )
+      )
+
+    ensure_returns(
+        "single char string " .. NAME,
+        2, { true, "A" },
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '1' .. NL
+           .. 'A' .. NL
+          )
+      )
+
+    ensure_returns(
+        "\\0 " .. NAME,
+        2, { true, "\0" },
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '1' .. NL
+           .. '\0' .. NL
+          )
+      )
+
+    ensure_returns(
+        "Embedded\\0Zero " .. NAME,
+        2, { true, "Embedded\0Zero" },
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '13' .. NL
+           .. 'Embedded\0Zero' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "empty string no second nl " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '0' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "string size too large (empty, no nl) " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. '1' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "string size too large (empty, nl) " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. (NL == "\r\n" and '2' or '1') .. NL
+           .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "string size too large (non-empty) " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'S' .. NL
+           .. (NL == "\r\n" and '3' or '2') .. NL
+           .. 'A' .. NL
+          )
+      )
+
+    do
+      local len = 1 * 1024 * 1024 -- 1 MB
+
+      local s = (function()
+        local b = { }
+        for i = 1, len do
+          b[#b + 1] = string.char(math.random(0, 255))
+        end
+        return table.concat(b)
+      end)()
+
+      ensure_returns(
+          "Large binary garbage " .. NAME,
+          2, { true, s },
+          LOAD(
+              '1' .. NL
+           .. 'S' .. NL
+             .. len .. NL
+             .. s .. NL
+            )
+        )
+    end
+
+    print("===== END string tests", NAME, "=====")
+
+    if LOAD_NAME == "LUA" then
+      -- TODO: Implement and test
+      print("===== SKIP utf8 tests", NAME, "=====")
+    else
+      print("===== BEGIN utf8 tests", NAME, "=====")
+
+      ensure_returns(
+          "empty utf8 " .. NAME,
+          2, { true, "" },
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '0' .. NL
+             .. NL
+            )
+        )
+
+      ensure_error_with_substring(
+          "empty utf8 with data " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '0' .. NL
+             .. 'A' .. NL
+            )
+        )
+
+      ensure_returns(
+          "single char utf8 " .. NAME,
+          2, { true, "A" },
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '1' .. NL
+             .. 'A' .. NL
+            )
+        )
+
+      ensure_returns(
+          "\\0 utf8 " .. NAME,
+          2, { true, "\0" },
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '1' .. NL
+             .. '\0' .. NL
+            )
+        )
+
+      ensure_returns(
+          "Embedded\\0Zero utf8 " .. NAME,
+          2, { true, "Embedded\0Zero" },
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '13' .. NL
+             .. 'Embedded\0Zero' .. NL
+            )
+        )
+
+      ensure_returns(
+          "Встроенный\\0Ноль utf8 " .. NAME,
+          2, { true, "Встроенный\0Ноль" },
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '15' .. NL
+             .. 'Встроенный\0Ноль' .. NL
+            )
+        )
+
+      ensure_error_with_substring(
+          "empty utf8 no second nl " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '0' .. NL
+            )
+        )
+
+      ensure_error_with_substring(
+          "utf8 size too large (empty, no nl) " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. '1' .. NL
+            )
+        )
+
+      ensure_error_with_substring(
+          "utf8 size too large (empty, nl) " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. (NL == "\r\n" and '2' or '1') .. NL
+             .. NL
+            )
+        )
+
+      ensure_error_with_substring(
+          "utf8 size too large (non-empty) " .. NAME,
+          "load failed: ",
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. (NL == "\r\n" and '3' or '2') .. NL
+             .. 'A' .. NL
+            )
+        )
+
+      for i = 1, 1e3 do
+        local b = { }
+        for i = 1, 1024 do
+          b[#b + 1] = "A"
+        end
+
+        for i = 1, 10 do
+          b[math.random(1, #b)] = string.char(math.random(128, 255)) -- bad code
+        end
+
+        local s = table.concat(b)
+
+        -- There is a small probability that above code will generate correct UTF-8.
+        ensure_error_with_substring(
+            "bogus utf8 #" .. i .. " " .. NAME,
+            "load failed: invalid utf-8 data", -- Important detail
+            LOAD(
+                '1' .. NL
+             .. '8' .. NL
+               .. #s .. NL -- Note that size is also wrong
+               .. s .. NL
+              )
+          )
+      end
+
+      ensure_error_with_substring(
+          "whole utf-8 test data " .. NAME,
+          "load failed: invalid utf-8 data", -- Important detail
+          LOAD(
+              '1' .. NL
+           .. '8' .. NL
+             .. #UTF8_TEST_DATA .. NL -- Note that size is also wrong
+             .. UTF8_TEST_DATA .. NL
+            )
+        )
+
+      -- Lines with bad UTF-8 in the above document.
+      local expected_errors =
       {
-        true,
-        { false, 0.36978798469984341945604455759166739881038665771484375 }
-      },
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
+        --
+        -- Original list of lines with bad UTF-8 sequences
+        --
+        102,  103,  105,  106,  107,  108,  109,  110,  114,  115,
+        116,  117,  124,  125,  130,  135,  140,  145,  153,  154,
+        155,  156,  157,  158,  159,  160,  161,  162,  169,  175,
+        176,  177,  207,  208,  209,  210,  211,  220,  221,  222,
+        223,  224,  232,  233,  234,  235,  236,  247,  248,  249,
+        250,  251,  252,  253,  257,  258,  259,  260,  261,  262,
+        263,  264,  268,  269;
+        --
+        -- Additional bad lines
+        -- TODO: Add more tests to compensate for these
+        --       (as some of this checks are for boundary conditions).
+        --
+        75; -- 5-byte sequence is illegal
+        76; -- 6-byte sequence is illegal
+        82; -- BOM non-character sequence is legitimately rejected by our reader
+        83; -- First byte 0xF7 (247) may not occur anywhere in valid UTF-8 byte seq.
+        84; -- 5-byte sequence is illegal
+        85; -- 6-byte sequence is illegal
+        93; -- Overlong form
+      }
+
+      table.sort(expected_errors)
+
+      local lines = split_by_char(UTF8_TEST_DATA, "\n")
+      local actual_errors = { }
+      for i = 1, #lines do
+        local res, err = LOAD(
+            '1' .. NL
+         .. '8' .. NL
+           .. (#lines[i] < 79 and #lines[i] or 79) .. NL
+           .. lines[i] .. NL
+          )
+        if res then
+          ensure_equals("loaded", err, lines[i])
+        else
+          ensure_equals(
+              "correct error " .. i, err,
+              "load failed: invalid utf-8 data" -- Important detail
+            )
+          actual_errors[#actual_errors + 1] = i
+        end
+      end
+      ensure_tequals(
+          "failure lines must match expected",
+          actual_errors,
+          expected_errors
+        )
+
+      print("===== END utf8 tests", NAME, "=====")
+    end
+    print("===== BEGIN fixed table tests", NAME, "=====")
+
+    ensure_returns(
+        "empty table " .. NAME,
+        2, { true, { } },
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+           .. '0' .. NL
+           .. '0' .. NL
+          )
+      )
+
+    ensure_returns(
+        "some data " .. NAME,
+        2,
+        {
+          true,
+          { false, 0.36978798469984341945604455759166739881038665771484375 }
+        },
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+           .. '2' .. NL
+           .. '0' .. NL
+           .. '0' .. NL
+           .. 'N' .. NL
+           .. '0.36978798469984341945604455759166739881038665771484375' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, no sizes, no nl " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, no sizes, one nl " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, no sizes, two nls " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. NL
+         .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, garbage array size " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. 'a' .. NL
+         .. '0' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, garbage hash size " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '0' .. NL
+         .. 'a' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, garbage after sizes " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '1' .. NL
+         .. '0' .. NL
+         .. 'yada yada!' .. NL
+          )
+      )
+
+    ensure_error_with_substring(
+        "table, array size too large " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
          .. '2' .. NL
          .. '0' .. NL
-         .. '0' .. NL
          .. 'N' .. NL
-         .. '0.36978798469984341945604455759166739881038665771484375' .. NL
-        )
-    )
+         .. '42' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, no sizes, no nl " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, hash size too large " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '0' .. NL
+         .. '2' .. NL
+         .. 'N' .. NL
+         .. '42' .. NL
+         .. 'N' .. NL
+         .. '42' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, no sizes, one nl " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, hash missing " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '1' .. NL
+         .. '1' .. NL
+         .. 'N' .. NL
+         .. '42' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, no sizes, two nls " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. NL
-       .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, hash value missing " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '1' .. NL
+         .. '1' .. NL
+         .. 'N' .. NL
+         .. '42' .. NL
+         .. 'N' .. NL
+         .. '42' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, garbage array size " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. 'a' .. NL
-       .. '0' .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, huge array size " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '65234375' .. NL
+         .. '0' .. NL
+         .. '-' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, garbage hash size " .. NAME,
-      "load failed: corrupt data",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '0' .. NL
-       .. 'a' .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, huge hash size " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '0' .. NL
+         .. '65234375' .. NL
+         .. '1' .. NL
+         .. '-' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, garbage after sizes " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '1' .. NL
-       .. '0' .. NL
-       .. 'yada yada!' .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, huge array and hash size " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 'T' .. NL
+         .. '65234375' .. NL
+         .. '65234375' .. NL
+         .. '-' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, array size too large " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '2' .. NL
-       .. '0' .. NL
-       .. 'N' .. NL
-       .. '42' .. NL
-        )
-    )
+    print("===== END fixed table tests", NAME, "=====")
 
-  ensure_error_with_substring(
-      "table, hash size too large " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '0' .. NL
-       .. '2' .. NL
-       .. 'N' .. NL
-       .. '42' .. NL
-       .. 'N' .. NL
-       .. '42' .. NL
-        )
-    )
+    print("===== BEGIN stream table tests", NAME, "=====")
 
-  ensure_error_with_substring(
-      "table, hash missing " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '1' .. NL
-       .. '1' .. NL
-       .. 'N' .. NL
-       .. '42' .. NL
-        )
-    )
+    ensure_returns(
+        "empty table " .. NAME,
+        2, { true, { } },
+        LOAD(
+            '1' .. NL
+         .. 't' .. NL
+           .. '-' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, hash value missing " .. NAME,
-      "load failed: corrupt data, truncated",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '1' .. NL
-       .. '1' .. NL
-       .. 'N' .. NL
-       .. '42' .. NL
-       .. 'N' .. NL
-       .. '42' .. NL
-        )
-    )
+    ensure_returns(
+        "nested tables " .. NAME,
+        2, { true, { [ { 42 } ] = { 24 } } },
+        LOAD(
+            '1' .. NL
+         .. 't' .. NL
+           .. 't' .. NL
+             .. 'N' .. NL
+             .. '1' .. NL
+             .. 'N' .. NL
+             .. '42' .. NL
+             .. '-' .. NL
+           .. 't' .. NL
+             .. 'N' .. NL
+             .. '1' .. NL
+             .. 'N' .. NL
+             .. '24' .. NL
+             .. '-' .. NL
+           .. '-' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, huge array size " .. NAME,
-      "load failed: value too huge",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '65234375' .. NL
-       .. '0' .. NL
-       .. '-' .. NL
-        )
-    )
+    ensure_returns(
+        "some data " .. NAME,
+        2,
+        {
+          true,
+          { false, 0.36978798469984341945604455759166739881038665771484375 }
+        },
+        LOAD(
+            '1' .. NL
+         .. 't' .. NL
+           .. 'N' .. NL
+           .. '1' .. NL
+           .. '0' .. NL
+           .. 'N' .. NL
+           .. '2' .. NL
+           .. 'N' .. NL
+           .. '0.36978798469984341945604455759166739881038665771484375' .. NL
+           .. '-' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, huge hash size " .. NAME,
-      "load failed: value too huge",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '0' .. NL
-       .. '65234375' .. NL
-       .. '1' .. NL
-       .. '-' .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, no nil " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 't' .. NL
+          )
+      )
 
-  ensure_error_with_substring(
-      "table, huge array and hash size " .. NAME,
-      "load failed: value too huge",
-      luatexts.load(
-          '1' .. NL
-       .. 'T' .. NL
-       .. '65234375' .. NL
-       .. '65234375' .. NL
-       .. '-' .. NL
-        )
-    )
+    ensure_error_with_substring(
+        "table, nil, no nl " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 't' .. NL
+         .. '-'
+          )
+      )
 
-  print("===== END table tests", NAME, "=====")
-  print("===== BEGIN generative tests", NAME, "=====")
+    ensure_error_with_substring(
+        "table, hash value missing " .. NAME,
+        "load failed: ",
+        LOAD(
+            '1' .. NL
+         .. 't' .. NL
+         .. 'N' .. NL
+         .. '42' .. NL
+          )
+      )
 
-  do
-    local constructors = { }
+    print("===== END stream table tests", NAME, "=====")
 
-    local construct = function(nesting)
-      return constructors[math.random(1, #constructors)](nesting)
-    end
+    print("===== BEGIN generative tests", NAME, "=====")
 
-    constructors[#constructors + 1] = function()
-      return nil
-    end
+    do
+      local constructors = { }
 
-    constructors[#constructors + 1] = function()
-      return false
-    end
+      local construct = function(nesting)
+        return constructors[math.random(1, #constructors)](nesting)
+      end
 
-    constructors[#constructors + 1] = function()
-      return true
-    end
+      constructors[#constructors + 1] = function()
+        return nil
+      end
 
-    constructors[#constructors + 1] = function()
-      return 0
-    end
+      constructors[#constructors + 1] = function()
+        return false
+      end
 
-    constructors[#constructors + 1] = function()
-      return 42
-    end
+      constructors[#constructors + 1] = function()
+        return true
+      end
 
-    constructors[#constructors + 1] = function()
-      return 3.14
-    end
+      constructors[#constructors + 1] = function()
+        return 0
+      end
 
-    constructors[#constructors + 1] = function()
-      return 1/0
-    end
+      constructors[#constructors + 1] = function()
+        return 42
+      end
 
-    constructors[#constructors + 1] = function()
-      return math.random()
-    end
+      constructors[#constructors + 1] = function()
+        return 3.14
+      end
 
-    constructors[#constructors + 1] = function()
-      return math.random(-1000, 1000)
-    end
+      constructors[#constructors + 1] = function()
+        return 1/0
+      end
 
-    constructors[#constructors + 1] = function()
-      return ""
-    end
+      constructors[#constructors + 1] = function()
+        return math.random()
+      end
 
-    constructors[#constructors + 1] = function()
-      return "luatexts"
-    end
+      constructors[#constructors + 1] = function()
+        return math.random(-1000, 1000)
+      end
 
-    constructors[#constructors + 1] = function()
-      return { }
-    end
+      constructors[#constructors + 1] = function()
+        return ""
+      end
 
-    constructors[#constructors + 1] = function(nesting)
-      nesting = (nesting or 0) + 1
+      constructors[#constructors + 1] = function()
+        return "luatexts"
+      end
 
-      if nesting > 10 then
+      constructors[#constructors + 1] = function()
         return { }
       end
 
-      local r = { }
+      constructors[#constructors + 1] = function(nesting)
+        nesting = (nesting or 0) + 1
 
-      for i = 1, math.random(0, 10) do
-        r[i] = construct(nesting)
-      end
-
-      for i = 1, math.random(0, 10) do
-        local k = construct(nesting)
-        if k == nil then
-          k = "(nil)"
+        if nesting > 10 then
+          return { }
         end
 
-        r[k] = construct(nesting)
+        local r = { }
+
+        for i = 1, math.random(0, 10) do
+          r[i] = construct(nesting)
+        end
+
+        for i = 1, math.random(0, 10) do
+          local k = construct(nesting)
+          if k == nil then
+            k = "(nil)"
+          end
+
+          r[k] = construct(nesting)
+        end
+
+        return r
       end
 
-      return r
-    end
+      local mutators = { }
 
-    local mutators = { }
-
-    local mutate = function(str, nesting)
-      return mutators[math.random(1, #mutators)](str, nesting)
-    end
-
-    -- truncate at end
-    mutators[#mutators + 1] = function(str)
-      local pos = math.random(1, #str)
-      return str:sub(1, pos)
-    end
-
-    -- truncate at beginning
-    mutators[#mutators + 1] = function(str)
-      local pos = math.random(1, #str)
-      return str:sub(-pos)
-    end
-
-    -- cut out the middle
-    mutators[#mutators + 1] = function(str)
-      local from = math.random(1, #str)
-      local to = math.random(from, #str)
-      return str:sub(1, from) .. str:sub(to)
-    end
-
-    -- swap two halves
-    mutators[#mutators + 1] = function(str)
-      local pos = math.random(1, #str)
-      return str:sub(pos + 1, #str) .. str:sub(1, pos)
-    end
-
-    -- swap two characters
-    mutators[#mutators + 1] = function(str)
-      local pa, pb = math.random(1, #str), math.random(1, #str)
-      local a, b = str:sub(pa, pa), str:sub(pb, pb)
-      return
-        str:sub(1, pa - 1) ..
-        a ..
-        str:sub(pa + 1, pb - 1) ..
-        b ..
-        str:sub(pb + 1, #str)
-    end
-
-    -- replace one character
-    mutators[#mutators + 1] = function(str)
-      local pos = math.random(1, #str)
-      return
-        str:sub(1, pos - 1) ..
-        string.char(math.random(0, 255)) ..
-        str:sub(pos + 1, #str)
-    end
-
-    -- increment one character
-    mutators[#mutators + 1] = function(str)
-      local pos = math.random(1, #str)
-      local b = str:byte(pos, pos) + 1
-      if b > 255 then
-        b = 0
-      end
-      return
-        str:sub(1, pos - 1) ..
-        string.char(b) ..
-        str:sub(pos + 1, #str)
-    end
-
-    -- decrement one character
-    mutators[#mutators + 1] = function(str)
-      local pos = math.random(1, #str)
-      local b = str:byte(pos, pos) - 1
-      if b < 0 then
-        b = 255
-      end
-      return
-        str:sub(1, pos - 1) ..
-        string.char(b) ..
-        str:sub(pos + 1, #str)
-    end
-
-    local mutated_ok = 0
-    local mutated_fail = 0
-
-    local C = 1
-    assert(os.execute("rm tmp/*"))
-
-    local num_steps = 1e4
-    for i = 1, num_steps do
-      if i % 500 == 0 --[[or (i >= 8732 and NL == "\n")--]] then
-        print("step", i, "of", num_steps)
+      local mutate = function(str, nesting)
+        return mutators[math.random(1, #mutators)](str, nesting)
       end
 
-      local n = math.random(0, 10)
-      local tuple = { }
-      for i = 1, n do
-        tuple[i] = construct()
+      -- truncate at end
+      mutators[#mutators + 1] = function(str)
+        local pos = math.random(1, #str)
+        return str:sub(1, pos)
       end
 
-      local data = ensure("save", luatexts_lua.save(unpack(tuple, 1, n)))
+      -- truncate at beginning
+      mutators[#mutators + 1] = function(str)
+        local pos = math.random(1, #str)
+        return str:sub(-pos)
+      end
 
-      local N = ("%08d"):format(C)
-      local f = assert(io.open("tmp/".. N .. ".lua", "w"))
-      f:write(
-          tserialize(tuple), ",", n
-        )
-      f:close()
-      local f = assert(io.open("tmp/".. N .. ".luatexts", "w"))
-      f:write(data)
-      f:close()
-      C = C + 1
+      -- cut out the middle
+      mutators[#mutators + 1] = function(str)
+        local from = math.random(1, #str)
+        local to = math.random(from, #str)
+        return str:sub(1, from) .. str:sub(to)
+      end
 
-      --[[
-      print("dataset #" .. i .. ", " .. #data .. " bytes")
-      local c = 0
-      print("tuple: ", tpretty(tuple, '  ', 80))
-      print("data:", data)
-      print(
-          "0000 : " .. data:gsub(
-              "\n", function()
-                c = c + 1
-                return (" : CRLF\n%04d : "):format(c)
-              end
-            )
-        )
-      --]]
+      -- swap two halves
+      mutators[#mutators + 1] = function(str)
+        local pos = math.random(1, #str)
+        return str:sub(pos + 1, #str) .. str:sub(1, pos)
+      end
 
-      -- TODO: This does not cover utf-8. It should!
-      ensure_returns(
-          "load",
-          n + 1, { true, unpack(tuple, 1, n) },
-          luatexts.load(data)
-        )
+      -- swap two characters
+      mutators[#mutators + 1] = function(str)
+        local pa, pb = math.random(1, #str), math.random(1, #str)
+        local a, b = str:sub(pa, pa), str:sub(pb, pb)
+        return
+          str:sub(1, pa - 1) ..
+          a ..
+          str:sub(pa + 1, pb - 1) ..
+          b ..
+          str:sub(pb + 1, #str)
+      end
 
-      -- Now trying to mutate
-      -- (ignoring results, the point is not to crash)
-      local num_steps = 100
-      for j = 1, num_steps do
+      -- replace one character
+      mutators[#mutators + 1] = function(str)
+        local pos = math.random(1, #str)
+        return
+          str:sub(1, pos - 1) ..
+          string.char(math.random(0, 255)) ..
+          str:sub(pos + 1, #str)
+      end
+
+      -- increment one character
+      mutators[#mutators + 1] = function(str)
+        local pos = math.random(1, #str)
+        local b = str:byte(pos, pos) + 1
+        if b > 255 then
+          b = 0
+        end
+        return
+          str:sub(1, pos - 1) ..
+          string.char(b) ..
+          str:sub(pos + 1, #str)
+      end
+
+      -- decrement one character
+      mutators[#mutators + 1] = function(str)
+        local pos = math.random(1, #str)
+        local b = str:byte(pos, pos) - 1
+        if b < 0 then
+          b = 255
+        end
+        return
+          str:sub(1, pos - 1) ..
+          string.char(b) ..
+          str:sub(pos + 1, #str)
+      end
+
+      local mutated_ok = 0
+      local mutated_fail = 0
+
+      local C = 1
+      assert(os.execute("rm tmp/*"))
+
+      local num_steps = 1e4
+      for i = 1, num_steps do
+        if i % 500 == 0 --[[or (i >= 8732 and NL == "\n")--]] then
+          print("step", i, "of", num_steps)
+        end
+
+        local n = math.random(0, 10)
+        local tuple = { }
+        for i = 1, n do
+          tuple[i] = construct()
+        end
+
+        local data = ensure("save", luatexts_lua.save(unpack(tuple, 1, n)))
+
+        local N = ("%08d"):format(C)
+        local f = assert(io.open("tmp/".. N .. ".lua", "w"))
+        f:write(
+            tserialize(tuple), ",", n
+          )
+        f:close()
+        local f = assert(io.open("tmp/".. N .. ".luatexts", "w"))
+        f:write(data)
+        f:close()
+        C = C + 1
+
         --[[
-        local dump = false
-        if i >= 8732 and j >= 12 and NL == "\n" then
-          print("mutation", i..":"..j, "of", num_steps)
-          dump = true
-        end
+        print("dataset #" .. i .. ", " .. #data .. " bytes")
+        local c = 0
+        print("tuple: ", tpretty(tuple, '  ', 80))
+        print("data:", data)
+        print(
+            "0000 : " .. data:gsub(
+                "\n", function()
+                  c = c + 1
+                  return (" : CRLF\n%04d : "):format(c)
+                end
+              )
+          )
         --]]
-        data = mutate(data)
-        --[[
-        if dump then
-          print("MUTATED", data)
-          print("GC size:", collectgarbage("count"))
-        end
-        --]]
-        local res = luatexts.load(data)
-        if res then
-          mutated_ok = mutated_ok + 1
-        else
-          mutated_fail = mutated_fail + 1
-        end
 
-        collectgarbage("step")
+        -- TODO: This does not cover utf-8. It should!
+        ensure_returns(
+            "load",
+            n + 1, { true, unpack(tuple, 1, n) },
+            LOAD(data)
+          )
+
+        -- Now trying to mutate
+        -- (ignoring results, the point is not to crash)
+        local num_steps = 100
+        for j = 1, num_steps do
+          --[[
+          local dump = false
+          if i >= 8732 and j >= 12 and NL == "\n" then
+            print("mutation", i..":"..j, "of", num_steps)
+            dump = true
+          end
+          --]]
+          data = mutate(data)
+          --[[
+          if dump then
+            print("MUTATED", data)
+            print("GC size:", collectgarbage("count"))
+          end
+          --]]
+          local res = LOAD(data)
+          if res then
+            mutated_ok = mutated_ok + 1
+          else
+            mutated_fail = mutated_fail + 1
+          end
+
+          collectgarbage("step")
+        end
       end
+
+      print("mutated ok:", mutated_ok)
+      print("mutated fail:", mutated_fail)
     end
 
-    print("mutated ok:", mutated_ok)
-    print("mutated fail:", mutated_fail)
+    print("===== END generative tests", NAME, "=====")
   end
-
-  print("===== END generative tests", NAME, "=====")
 end
 
 local NAME = ""
@@ -2325,19 +2427,19 @@ ensure_error_with_substring(
 
 ensure_error_with_substring(
     "random garbage " .. NAME,
-    "load failed: corrupt data",
+    "load failed: ",
     luatexts.load_from_file("./test/data/garbage.luatexts")
   )
 
 ensure_error_with_substring(
     "truncated-1 " .. NAME,
-    "load failed: corrupt data",
+    "load failed: ",
     luatexts.load_from_file("./test/data/truncated.luatexts")
   )
 
 ensure_error_with_substring(
     "truncated-2 " .. NAME,
-    "load failed: corrupt data",
+    "load failed: ",
     luatexts.load_from_file("./test/data/truncated2.luatexts")
   )
 
