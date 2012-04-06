@@ -1,0 +1,1027 @@
+Fri Apr  6 13:01:18 MSK 2012 REPRODUCE BEGIN
+Fri Apr  6 13:02:12 MSK 2012 ERROR 1 BEGIN (iteration 6)
+Fri Apr  6 13:02:12 MSK 2012 strace:
+Fri Apr  6 13:02:12 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:04:44 MSK 2012 ERROR 2 BEGIN (iteration 23)
+Fri Apr  6 13:04:44 MSK 2012 strace:
+Fri Apr  6 13:04:44 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:04:46 MSK 2012 ERROR 3 BEGIN (iteration 24)
+Fri Apr  6 13:04:46 MSK 2012 strace:
+Fri Apr  6 13:04:46 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:06:02 MSK 2012 ERROR 4 BEGIN (iteration 33)
+Fri Apr  6 13:06:02 MSK 2012 strace:
+Fri Apr  6 13:06:02 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:06:06 MSK 2012 ERROR 5 BEGIN (iteration 34)
+Fri Apr  6 13:06:06 MSK 2012 strace:
+Fri Apr  6 13:06:06 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:06:39 MSK 2012 ERROR 6 BEGIN (iteration 38)
+Fri Apr  6 13:06:39 MSK 2012 strace:
+Fri Apr  6 13:06:39 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:06:51 MSK 2012 ERROR 7 BEGIN (iteration 40)
+Fri Apr  6 13:06:51 MSK 2012 strace:
+Fri Apr  6 13:06:51 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:08:07 MSK 2012 ERROR 8 BEGIN (iteration 49)
+Fri Apr  6 13:08:07 MSK 2012 strace:
+Fri Apr  6 13:08:07 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:08:46 MSK 2012 ERROR 9 BEGIN (iteration 54)
+Fri Apr  6 13:08:46 MSK 2012 strace:
+Fri Apr  6 13:08:46 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:08:57 MSK 2012 ERROR 10 BEGIN (iteration 56)
+Fri Apr  6 13:08:57 MSK 2012 strace:
+Fri Apr  6 13:08:57 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:11:05 MSK 2012 ERROR 11 BEGIN (iteration 71)
+Fri Apr  6 13:11:05 MSK 2012 strace:
+Fri Apr  6 13:11:05 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:11:45 MSK 2012 ERROR 12 BEGIN (iteration 76)
+Fri Apr  6 13:11:45 MSK 2012 strace:
+Fri Apr  6 13:11:45 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:11:56 MSK 2012 ERROR 13 BEGIN (iteration 78)
+Fri Apr  6 13:11:56 MSK 2012 strace:
+Fri Apr  6 13:11:56 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:12:17 MSK 2012 ERROR 14 BEGIN (iteration 81)
+Fri Apr  6 13:12:17 MSK 2012 strace:
+Fri Apr  6 13:12:17 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:13:15 MSK 2012 ERROR 15 BEGIN (iteration 88)
+Fri Apr  6 13:13:15 MSK 2012 strace:
+Fri Apr  6 13:13:15 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:14:50 MSK 2012 ERROR 16 BEGIN (iteration 99)
+Fri Apr  6 13:14:50 MSK 2012 strace:
+Fri Apr  6 13:14:50 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:15:25 MSK 2012 ERROR 17 BEGIN (iteration 103)
+Fri Apr  6 13:15:25 MSK 2012 strace:
+Fri Apr  6 13:15:25 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:15:27 MSK 2012 ERROR 18 BEGIN (iteration 104)
+Fri Apr  6 13:15:27 MSK 2012 strace:
+Fri Apr  6 13:15:27 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:15:37 MSK 2012 ERROR 19 BEGIN (iteration 106)
+Fri Apr  6 13:15:37 MSK 2012 strace:
+Fri Apr  6 13:15:37 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:15:58 MSK 2012 ERROR 20 BEGIN (iteration 109)
+Fri Apr  6 13:15:58 MSK 2012 strace:
+Fri Apr  6 13:15:58 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:16:27 MSK 2012 ERROR 21 BEGIN (iteration 113)
+Fri Apr  6 13:16:27 MSK 2012 strace:
+Fri Apr  6 13:16:27 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:17:04 MSK 2012 ERROR 22 BEGIN (iteration 118)
+Fri Apr  6 13:17:04 MSK 2012 strace:
+Fri Apr  6 13:17:04 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:17:24 MSK 2012 ERROR 23 BEGIN (iteration 121)
+Fri Apr  6 13:17:24 MSK 2012 strace:
+Fri Apr  6 13:17:24 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:17:36 MSK 2012 ERROR 24 BEGIN (iteration 123)
+Fri Apr  6 13:17:36 MSK 2012 strace:
+Fri Apr  6 13:17:36 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:19:22 MSK 2012 ERROR 25 BEGIN (iteration 135)
+Fri Apr  6 13:19:22 MSK 2012 strace:
+Fri Apr  6 13:19:22 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:19:38 MSK 2012 ERROR 26 BEGIN (iteration 137)
+Fri Apr  6 13:19:38 MSK 2012 strace:
+Fri Apr  6 13:19:38 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:19:49 MSK 2012 ERROR 27 BEGIN (iteration 139)
+Fri Apr  6 13:19:49 MSK 2012 strace:
+Fri Apr  6 13:19:50 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:20:19 MSK 2012 ERROR 28 BEGIN (iteration 143)
+Fri Apr  6 13:20:19 MSK 2012 strace:
+Fri Apr  6 13:20:19 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:20:49 MSK 2012 ERROR 29 BEGIN (iteration 147)
+Fri Apr  6 13:20:49 MSK 2012 strace:
+Fri Apr  6 13:20:49 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:205: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:21:47 MSK 2012 ERROR 30 BEGIN (iteration 154)
+Fri Apr  6 13:21:47 MSK 2012 strace:
+Fri Apr  6 13:21:47 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:22:45 MSK 2012 ERROR 31 BEGIN (iteration 161)
+Fri Apr  6 13:22:45 MSK 2012 strace:
+Fri Apr  6 13:22:45 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:25:33 MSK 2012 ERROR 32 BEGIN (iteration 180)
+Fri Apr  6 13:25:33 MSK 2012 strace:
+Fri Apr  6 13:25:33 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:25:35 MSK 2012 ERROR 33 BEGIN (iteration 181)
+Fri Apr  6 13:25:35 MSK 2012 strace:
+Fri Apr  6 13:25:35 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:26:14 MSK 2012 ERROR 34 BEGIN (iteration 186)
+Fri Apr  6 13:26:14 MSK 2012 strace:
+Fri Apr  6 13:26:14 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:26:25 MSK 2012 ERROR 35 BEGIN (iteration 188)
+Fri Apr  6 13:26:25 MSK 2012 strace:
+Fri Apr  6 13:26:25 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:27:52 MSK 2012 ERROR 36 BEGIN (iteration 198)
+Fri Apr  6 13:27:52 MSK 2012 strace:
+Fri Apr  6 13:27:52 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a boolean value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:27:54 MSK 2012 ERROR 37 BEGIN (iteration 199)
+Fri Apr  6 13:27:54 MSK 2012 strace:
+Fri Apr  6 13:27:54 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:27:56 MSK 2012 ERROR 38 BEGIN (iteration 200)
+Fri Apr  6 13:27:56 MSK 2012 strace:
+Fri Apr  6 13:27:56 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:29:29 MSK 2012 ERROR 39 BEGIN (iteration 211)
+Fri Apr  6 13:29:29 MSK 2012 strace:
+Fri Apr  6 13:29:29 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:29:31 MSK 2012 ERROR 40 BEGIN (iteration 212)
+Fri Apr  6 13:29:31 MSK 2012 strace:
+Fri Apr  6 13:29:31 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:30:41 MSK 2012 ERROR 41 BEGIN (iteration 220)
+Fri Apr  6 13:30:41 MSK 2012 strace:
+Fri Apr  6 13:30:41 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:32:36 MSK 2012 ERROR 42 BEGIN (iteration 233)
+Fri Apr  6 13:32:36 MSK 2012 strace:
+Fri Apr  6 13:32:36 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:35:13 MSK 2012 ERROR 43 BEGIN (iteration 250)
+Fri Apr  6 13:35:13 MSK 2012 strace:
+Fri Apr  6 13:35:13 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:35:53 MSK 2012 ERROR 44 BEGIN (iteration 255)
+Fri Apr  6 13:35:53 MSK 2012 strace:
+Fri Apr  6 13:35:53 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:36:04 MSK 2012 ERROR 45 BEGIN (iteration 257)
+Fri Apr  6 13:36:04 MSK 2012 strace:
+Fri Apr  6 13:36:04 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:38:07 MSK 2012 ERROR 46 BEGIN (iteration 271)
+Fri Apr  6 13:38:07 MSK 2012 strace:
+Fri Apr  6 13:38:07 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:38:18 MSK 2012 ERROR 47 BEGIN (iteration 273)
+Fri Apr  6 13:38:18 MSK 2012 strace:
+Fri Apr  6 13:38:18 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:39:54 MSK 2012 ERROR 48 BEGIN (iteration 284)
+Fri Apr  6 13:39:54 MSK 2012 strace:
+Fri Apr  6 13:39:54 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:39:56 MSK 2012 ERROR 49 BEGIN (iteration 285)
+Fri Apr  6 13:39:56 MSK 2012 strace:
+Fri Apr  6 13:39:56 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:205: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:40:16 MSK 2012 ERROR 50 BEGIN (iteration 288)
+Fri Apr  6 13:40:16 MSK 2012 strace:
+Fri Apr  6 13:40:16 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:41:20 MSK 2012 ERROR 51 BEGIN (iteration 296)
+Fri Apr  6 13:41:20 MSK 2012 strace:
+Fri Apr  6 13:41:20 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:42:29 MSK 2012 ERROR 52 BEGIN (iteration 304)
+Fri Apr  6 13:42:29 MSK 2012 strace:
+Fri Apr  6 13:42:29 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:43:47 MSK 2012 ERROR 53 BEGIN (iteration 313)
+Fri Apr  6 13:43:47 MSK 2012 strace:
+Fri Apr  6 13:43:47 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:43:54 MSK 2012 ERROR 54 BEGIN (iteration 314)
+Fri Apr  6 13:43:54 MSK 2012 strace:
+Fri Apr  6 13:43:54 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:43:55 MSK 2012 ERROR 55 BEGIN (iteration 315)
+Fri Apr  6 13:43:55 MSK 2012 strace:
+Fri Apr  6 13:43:55 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:205: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:44:53 MSK 2012 ERROR 56 BEGIN (iteration 322)
+Fri Apr  6 13:44:53 MSK 2012 strace:
+Fri Apr  6 13:44:53 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:45:22 MSK 2012 ERROR 57 BEGIN (iteration 326)
+Fri Apr  6 13:45:22 MSK 2012 strace:
+Fri Apr  6 13:45:22 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:45:42 MSK 2012 ERROR 58 BEGIN (iteration 329)
+Fri Apr  6 13:45:42 MSK 2012 strace:
+Fri Apr  6 13:45:42 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:47:59 MSK 2012 ERROR 59 BEGIN (iteration 345)
+Fri Apr  6 13:47:59 MSK 2012 strace:
+Fri Apr  6 13:47:59 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:48:20 MSK 2012 ERROR 60 BEGIN (iteration 348)
+Fri Apr  6 13:48:20 MSK 2012 strace:
+Fri Apr  6 13:48:20 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:49:15 MSK 2012 ERROR 61 BEGIN (iteration 355)
+Fri Apr  6 13:49:15 MSK 2012 strace:
+Fri Apr  6 13:49:15 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:205: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:49:50 MSK 2012 ERROR 62 BEGIN (iteration 359)
+Fri Apr  6 13:49:50 MSK 2012 strace:
+Fri Apr  6 13:49:50 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:50:34 MSK 2012 ERROR 63 BEGIN (iteration 364)
+Fri Apr  6 13:50:34 MSK 2012 strace:
+Fri Apr  6 13:50:34 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:50:55 MSK 2012 ERROR 64 BEGIN (iteration 367)
+Fri Apr  6 13:50:55 MSK 2012 strace:
+Fri Apr  6 13:50:55 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:51:44 MSK 2012 ERROR 65 BEGIN (iteration 373)
+Fri Apr  6 13:51:44 MSK 2012 strace:
+Fri Apr  6 13:51:44 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:52:43 MSK 2012 ERROR 66 BEGIN (iteration 380)
+Fri Apr  6 13:52:43 MSK 2012 strace:
+Fri Apr  6 13:52:43 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:54:48 MSK 2012 ERROR 67 BEGIN (iteration 394)
+Fri Apr  6 13:54:48 MSK 2012 strace:
+Fri Apr  6 13:54:48 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:55:18 MSK 2012 ERROR 68 BEGIN (iteration 398)
+Fri Apr  6 13:55:18 MSK 2012 strace:
+Fri Apr  6 13:55:18 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:55:29 MSK 2012 ERROR 69 BEGIN (iteration 400)
+Fri Apr  6 13:55:29 MSK 2012 strace:
+Fri Apr  6 13:55:29 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:55:31 MSK 2012 ERROR 70 BEGIN (iteration 401)
+Fri Apr  6 13:55:31 MSK 2012 strace:
+Fri Apr  6 13:55:31 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:56:20 MSK 2012 ERROR 71 BEGIN (iteration 407)
+Fri Apr  6 13:56:20 MSK 2012 strace:
+Fri Apr  6 13:56:20 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:57:56 MSK 2012 ERROR 72 BEGIN (iteration 418)
+Fri Apr  6 13:57:56 MSK 2012 strace:
+Fri Apr  6 13:57:56 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:57:58 MSK 2012 ERROR 73 BEGIN (iteration 419)
+Fri Apr  6 13:57:58 MSK 2012 strace:
+Fri Apr  6 13:57:58 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:57:59 MSK 2012 ERROR 74 BEGIN (iteration 420)
+Fri Apr  6 13:57:59 MSK 2012 strace:
+Fri Apr  6 13:57:59 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:58:01 MSK 2012 ERROR 75 BEGIN (iteration 421)
+Fri Apr  6 13:58:01 MSK 2012 strace:
+Fri Apr  6 13:58:01 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:58:41 MSK 2012 ERROR 76 BEGIN (iteration 426)
+Fri Apr  6 13:58:41 MSK 2012 strace:
+Fri Apr  6 13:58:41 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:59:39 MSK 2012 ERROR 77 BEGIN (iteration 433)
+Fri Apr  6 13:59:39 MSK 2012 strace:
+Fri Apr  6 13:59:39 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 13:59:50 MSK 2012 ERROR 78 BEGIN (iteration 435)
+Fri Apr  6 13:59:50 MSK 2012 strace:
+Fri Apr  6 13:59:50 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:01:11 MSK 2012 ERROR 79 BEGIN (iteration 445)
+Fri Apr  6 14:01:11 MSK 2012 strace:
+Fri Apr  6 14:01:11 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:01:56 MSK 2012 ERROR 80 BEGIN (iteration 451)
+Fri Apr  6 14:01:56 MSK 2012 strace:
+Fri Apr  6 14:01:56 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:04:12 MSK 2012 ERROR 81 BEGIN (iteration 467)
+Fri Apr  6 14:04:12 MSK 2012 strace:
+Fri Apr  6 14:04:12 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:04:14 MSK 2012 ERROR 82 BEGIN (iteration 468)
+Fri Apr  6 14:04:14 MSK 2012 strace:
+Fri Apr  6 14:04:14 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:04:44 MSK 2012 ERROR 83 BEGIN (iteration 472)
+Fri Apr  6 14:04:44 MSK 2012 strace:
+Fri Apr  6 14:04:44 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:04:46 MSK 2012 ERROR 84 BEGIN (iteration 473)
+Fri Apr  6 14:04:46 MSK 2012 strace:
+Fri Apr  6 14:04:46 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:205: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:04:57 MSK 2012 ERROR 85 BEGIN (iteration 475)
+Fri Apr  6 14:04:57 MSK 2012 strace:
+Fri Apr  6 14:04:57 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:05:26 MSK 2012 ERROR 86 BEGIN (iteration 479)
+Fri Apr  6 14:05:26 MSK 2012 strace:
+Fri Apr  6 14:05:26 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:05:30 MSK 2012 ERROR 87 BEGIN (iteration 480)
+Fri Apr  6 14:05:30 MSK 2012 strace:
+Fri Apr  6 14:05:30 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:05:31 MSK 2012 ERROR 88 BEGIN (iteration 481)
+Fri Apr  6 14:05:31 MSK 2012 strace:
+Fri Apr  6 14:05:31 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:05:52 MSK 2012 ERROR 89 BEGIN (iteration 484)
+Fri Apr  6 14:05:52 MSK 2012 strace:
+Fri Apr  6 14:05:52 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:06:03 MSK 2012 ERROR 90 BEGIN (iteration 486)
+Fri Apr  6 14:06:03 MSK 2012 strace:
+Fri Apr  6 14:06:03 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:08:09 MSK 2012 ERROR 91 BEGIN (iteration 500)
+Fri Apr  6 14:08:09 MSK 2012 strace:
+Fri Apr  6 14:08:09 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:08:11 MSK 2012 ERROR 92 BEGIN (iteration 501)
+Fri Apr  6 14:08:11 MSK 2012 strace:
+Fri Apr  6 14:08:11 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:08:41 MSK 2012 ERROR 93 BEGIN (iteration 505)
+Fri Apr  6 14:08:41 MSK 2012 strace:
+Fri Apr  6 14:08:41 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a function value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:205: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:201: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:08:51 MSK 2012 ERROR 94 BEGIN (iteration 507)
+Fri Apr  6 14:08:51 MSK 2012 strace:
+Fri Apr  6 14:08:51 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:08:53 MSK 2012 ERROR 95 BEGIN (iteration 508)
+Fri Apr  6 14:08:53 MSK 2012 strace:
+Fri Apr  6 14:08:53 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:10:37 MSK 2012 ERROR 96 BEGIN (iteration 520)
+Fri Apr  6 14:10:37 MSK 2012 strace:
+Fri Apr  6 14:10:37 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:10:41 MSK 2012 ERROR 97 BEGIN (iteration 521)
+Fri Apr  6 14:10:41 MSK 2012 strace:
+Fri Apr  6 14:10:41 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:11:01 MSK 2012 ERROR 98 BEGIN (iteration 524)
+Fri Apr  6 14:11:01 MSK 2012 strace:
+Fri Apr  6 14:11:01 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: attempt to get length of local 'keys1' (a number value)
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:190: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:184: in function 'tmore'
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:225: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:11:50 MSK 2012 ERROR 99 BEGIN (iteration 530)
+Fri Apr  6 14:11:50 MSK 2012 strace:
+Fri Apr  6 14:11:50 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
+Fri Apr  6 14:11:52 MSK 2012 ERROR 100 BEGIN (iteration 531)
+Fri Apr  6 14:11:52 MSK 2012 strace:
+Fri Apr  6 14:11:52 MSK 2012 stderr:
+./luajit: /usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua:0: attempt to index a boolean value
+stack traceback:
+	/usr/local/share/lua/5.1//lua-nucleo/tdeepequals.lua: in function 'tdeepequals'
+	/usr/local/share/lua/5.1//lua-nucleo/ensure.lua:316: in function 'ensure_returns'
+	../../etc/replay.lua:79: in main chunk
+	[C]: ?
