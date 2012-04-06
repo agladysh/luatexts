@@ -120,6 +120,277 @@ end
 
 --------------------------------------------------------------------------------
 
+local load
+do
+  local make_read_buf
+  do
+    local read = function(self, bytes)
+      local off = self.next_ + bytes - 1
+
+      if off > #self.str_ then
+        self:fail("load failed: read: not enough data in buffer")
+        return nil
+      end
+
+      local result = self.str_:sub(self.next_, off)
+
+      self.next_ = off + 1
+
+      return result
+    end
+
+    local readline = function(self)
+      if self.next_ > #self.str_ then
+        self:fail("load failed: readline: not enough data in buffer")
+        return nil
+      end
+
+      local start, off, result = self.str_:find("(.-)\r?\n", self.next_)
+      if not result then
+        self:fail("load failed: readline: can't find a newline")
+        return nil
+      end
+
+      assert(start == self.next_)
+
+      self.next_ = off + 1
+
+      return result
+    end
+
+    local good = function(self)
+      return not self.failed_
+    end
+
+    local fail = function(self, msg)
+      self.failed_ = msg -- overriding old error
+    end
+
+    local result = function(self)
+      if self:good() then
+        return true
+      end
+
+      return nil, self.failed_
+    end
+
+    make_read_buf = function(str)
+
+      return
+      {
+        readline = readline;
+        read = read;
+        --
+        good = good;
+        fail = fail;
+        result = result;
+        --
+        str_ = str;
+        next_ = 1;
+        failed_ = false;
+      }
+    end
+
+  end
+
+  local invariant = function(v)
+    return function()
+      return v
+    end
+  end
+
+  local number = function(base)
+    return function(buf)
+      local v = buf:readline()
+      if not buf:good() then
+        return nil
+      end
+      v = tonumber(v, base)
+      if not v then
+        buf:fail("load failed: not a number")
+      end
+      return v
+    end
+  end
+
+  local uint = function(base)
+    local read_number = number(base)
+
+    return function(buf)
+      local v = read_number(buf)
+
+      if not buf:good() then
+        return nil
+      end
+      if v ~= v then
+        buf:fail("load failed: uint is nan")
+        return nil
+      end
+      if v < 0 then
+        buf:fail("load failed: negative uint")
+        return nil
+      end
+      if v > 4294967295 then
+        buf:fail("load failed: uint is too huge")
+        return nil
+      end
+      if v % 1 ~= 0 then
+        buf:fail("load failed: fractional uint")
+        return nil
+      end
+
+      return v
+    end
+  end
+
+  local read_uint10 = uint(10)
+
+  local unsupported = function(buf)
+    buf:fail("load failed: unsupported value type")
+  end
+
+  local read_value
+
+  local value_readers =
+  {
+    ['-'] = invariant(nil);
+    ['0'] = invariant(false);
+    ['1'] = invariant(true);
+    ['N'] = number(10);
+    ['U'] = read_uint10;
+    ['H'] = uint(16); -- TODO: Not strict enough?
+    ['Z'] = uint(36); -- TODO: Not strict enough?
+
+    ['S'] = function(buf)
+      local length = read_uint10(buf)
+      if not buf:good() then
+        return nil
+      end
+
+      local v = buf:read(length)
+      if not buf:good() then
+        return nil
+      end
+
+      -- Eat EOL after data
+      local empty = buf:readline()
+      if not buf:good() then
+        return nil
+      end
+
+      if empty ~= "" then
+        buf:fail("load failed: garbage after string data")
+        return nil
+      end
+
+      return v
+    end;
+
+    ['8'] = unsupported; -- TODO: Support utf8
+
+    ['T'] = function(buf)
+      local array_size = read_uint10(buf)
+      if not buf:good() then
+        return
+      end
+
+      local hash_size = read_uint10(buf)
+      if not buf:good() then
+        return
+      end
+
+      local r = { }
+
+      for i = 1, array_size do
+        if not buf:good() then
+          return
+        end
+
+        r[i] = read_value(buf)
+      end
+
+      for i = 1, hash_size do
+        if not buf:good() then
+          return
+        end
+
+        local k = read_value(buf)
+        if buf:good() then
+          if k == nil then
+            buf:fail("load failed: table key is nil")
+          else
+            r[k] = read_value(buf)
+          end
+        end
+      end
+
+      return r
+    end;
+
+    ['t'] = function(buf)
+      local r = { }
+
+      while buf:good() do
+        local k = read_value(buf)
+        if buf:good() then
+          if k == nil then
+            break -- end of table
+          else
+            r[k] = read_value(buf)
+          end
+        end
+      end
+
+      return r
+    end;
+  }
+
+  read_value = function(buf)
+    local value_type = buf:readline()
+    if not buf:good() then
+      return
+    end
+
+    local reader = value_readers[value_type]
+    if not reader then
+      buf:fail("load failed: unknown value type")
+      return
+    end
+
+    return reader(buf)
+  end
+
+  load = function(str)
+    if type(str) ~= "string" then -- TODO: Support io.file?
+      -- Imitating C API to simplify tests
+      error(
+          "bad argument #1 to 'load' (string expected)"
+        )
+    end
+
+    local buf = make_read_buf(str)
+
+    local n = read_uint10(buf)
+    if not buf:good() then
+      return buf:result()
+    end
+
+    -- TODO: Use recursion instead?
+    local r = { }
+    for i = 1, n do
+      r[i] = read_value(buf)
+
+      if not buf:good() then
+        return buf:result()
+      end
+    end
+
+    return true, unpack(r, 1, n)
+  end
+end
+
+--------------------------------------------------------------------------------
+
 return
 {
   _VERSION = "luatexts-lua 0.1.3";
@@ -128,5 +399,5 @@ return
   --
   save = save;
   save_cat = save_cat;
-  -- Sorry, no load() (yet). Patches are welcome.
+  load = load;
 }
