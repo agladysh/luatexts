@@ -428,6 +428,26 @@ static int ltsLS_readline(
   return LUATEXTS_ECLIPPED;
 }
 
+static const signed char uint10_lookup_table[256] =
+{
+/*  0*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 16*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 32*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 48*/     0,  1,  2,  3,  4,  5,  6,  7,  8 , 9 ,-1, -1, -1, -1, -1, -1,
+/* 64*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 80*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 96*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*112*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*128*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*144*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*160*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*176*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*192*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*208*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*224*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*240*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1
+};
+
 static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
 {
   /*
@@ -445,22 +465,25 @@ static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
   }
 
   LUATEXTS_ENSURE(ls,
-      (LUATEXTS_UINT)(*ls->pos - '0') < 10,
+      uint10_lookup_table[*ls->pos] >= 0,
       LUATEXTS_EBADDATA,
       ("ltsLS_readuint10: first character is not a number\n")
     );
 
   /* current character is a number and we have something to read */
-  while ((LUATEXTS_UINT)(*ls->pos - '0') < 10)
+  while (uint10_lookup_table[*ls->pos] >= 0)
   {
     /* Are we about to overflow? */
     LUATEXTS_ENSURE(ls,
-        !((k >= 429496729) && (k != 429496729 || *ls->pos > '5')),
+        !(
+          (k >= 429496729) &&
+          (k != 429496729 || uint10_lookup_table[*ls->pos] > 5)
+        ),
         LUATEXTS_ETOOHUGE,
         ("ltsLS_readuint10: value does not fit to uint32_t\n")
       );
 
-    k = k * 10u + (LUATEXTS_UINT)(*ls->pos - '0');
+    k = k * 10u + uint10_lookup_table[*ls->pos];
 
     EAT_CHAR(ls, "ltsLS_readuint10");
   }
