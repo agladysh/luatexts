@@ -536,36 +536,69 @@ static int ltsLS_readuint16(lts_LoadState * ls, LUATEXTS_UINT * dest)
   return LUATEXTS_ESUCCESS;
 }
 
-static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
+static const signed char uint36_lookup_table[256] =
 {
-  size_t len = 0;
-  const unsigned char * data = NULL;
-  int result = ltsLS_readline(ls, &data, &len);
-  char * endptr = NULL;
-  LUATEXTS_UINT value = 0;
+/*  0*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 16*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 32*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 48*/     0,  1,  2,  3,  4,  5,  6,  7,  8 , 9 ,-1, -1, -1, -1, -1, -1,
+/* 64*/    -1, 10, 11, 12, 13, 14, 15, 16, 17 ,18 ,19, 20, 21, 22, 23, 24,
+/* 80*/    25, 26, 27, 28, 29, 30, 31, 32, 33 ,34 ,35, -1, -1, -1, -1, -1,
+/* 96*/    -1, 10, 11, 12, 13, 14, 15, 16, 17 ,18 ,19, 20, 21, 22, 23, 24,
+/*112*/    25, 26, 27, 28, 29, 30, 31, 32, 33 ,34 ,35, -1, -1, -1, -1, -1,
+/*128*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*144*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*160*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*176*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*192*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*208*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*224*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*240*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1
+};
 
-  if (result != LUATEXTS_ESUCCESS)
+static int ltsLS_readuint36(lts_LoadState * ls, LUATEXTS_UINT * dest)
+{
+  /*
+    Not supporting leading '-' (this is unsigned int)
+    and not eating leading whitespace
+    (it is accidental that strtoul eats it,
+    luatexts format formally does not support this).
+  */
+  LUATEXTS_UINT k = 0;
+
+  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
   {
-    ESPAM(("readuint: failed to read line"));
-    return result;
+    ESPAM(("ltsLS_readuint36: clipped\n"));
+    return LUATEXTS_ECLIPPED;
   }
 
   LUATEXTS_ENSURE(ls,
-      len > 0,
-      LUATEXTS_EBADDATA, ("readuint: empty line instead of number\n")
+      uint36_lookup_table[*ls->pos] >= 0,
+      LUATEXTS_EBADDATA,
+      ("ltsLS_readuint36: first character is not a base36 number\n")
     );
 
-  /*
-  * This is safe, since we're guaranteed to have
-  * at least one non-numeric trailing byte.
-  */
-  value = strtoul((const char *)data, &endptr, base);
-  LUATEXTS_ENSURE(ls,
-      (const unsigned char *)endptr == data + len,
-      LUATEXTS_EGARBAGE, ("readuint: garbage before eol\n")
-    );
+  /* current character is a number and we have something to read */
+  while (uint36_lookup_table[*ls->pos] >= 0)
+  {
+    /* Are we about to overflow? */
+    LUATEXTS_ENSURE(ls,
+        !(
+          (k >= 119304647) &&
+          (k != 119304647 || uint36_lookup_table[*ls->pos] > 3)
+        ),
+        LUATEXTS_ETOOHUGE,
+        ("ltsLS_readuint36: value does not fit to uint32_t\n")
+      );
 
-  *dest = value;
+    k = k * 36u + uint36_lookup_table[*ls->pos];
+
+    EAT_CHAR(ls, "ltsLS_readuint36");
+  }
+
+  EAT_NEWLINE(ls, "ltsLS_readuint36");
+
+  *dest = k;
 
   return LUATEXTS_ESUCCESS;
 }
@@ -821,7 +854,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
         {
           LUATEXTS_UINT value;
 
-          result = ltsLS_readuint(ls, &value, 36);
+          result = ltsLS_readuint36(ls, &value);
           if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
