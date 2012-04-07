@@ -329,6 +329,12 @@ implementation of luatexts data serializer.
   Returns unserialized data tuple (as multiple return values).
   Tuples may be of zero values.
 
+  Issues (to be fixed in later revisions):
+
+  * Does not support loading UTF-8 string value type.
+    Use ordinary string value data to pass UTF-8 data instead.
+    (You'll need to know its size in bytes, of course.)
+
 ### JavaScript
 
 * `LUATEXTS.save(...) : string`
