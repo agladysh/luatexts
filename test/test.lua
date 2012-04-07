@@ -2443,6 +2443,12 @@ ensure_error_with_substring(
     luatexts.load_from_file("./test/data/truncated2.luatexts")
   )
 
+ensure_error_with_substring(
+    "noeol " .. NAME,
+    "load failed: ",
+    luatexts.load_from_file("./test/data/noeol.luatexts")
+  )
+
 ensure_returns(
     "good " .. NAME,
     2, { true, 42 },
