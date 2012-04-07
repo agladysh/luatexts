@@ -110,6 +110,12 @@ typedef unsigned long LUATEXTS_UINT;
 
 #endif /* !defined(LUATEXTS_LIKELY) */
 
+#define LUATEXTS_CONCAT_(lhs, rhs) lhs ## rhs
+#define LUATEXTS_CONCAT(lhs, rhs) LUATEXTS_CONCAT_(lhs, rhs)
+
+#define LUATEXTS_STRINGIFY_(a) #a
+#define LUATEXTS_STRINGIFY(a) LUATEXTS_STRINGIFY_(a)
+
 typedef struct lts_LoadState
 {
   const unsigned char * pos;
@@ -428,7 +434,7 @@ static int ltsLS_readline(
   return LUATEXTS_ECLIPPED;
 }
 
-static const signed char uint10_lookup_table[256] =
+static const signed char uint_lookup_table_10[256] =
 {
 /*  0*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
 /* 16*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
@@ -448,54 +454,7 @@ static const signed char uint10_lookup_table[256] =
 /*240*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1
 };
 
-static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
-{
-  /*
-    Not supporting leading '-' (this is unsigned int)
-    and not eating leading whitespace
-    (it is accidental that strtoul eats it,
-    luatexts format formally does not support this).
-  */
-  LUATEXTS_UINT k = 0;
-
-  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
-  {
-    ESPAM(("ltsLS_readuint10: clipped\n"));
-    return LUATEXTS_ECLIPPED;
-  }
-
-  LUATEXTS_ENSURE(ls,
-      uint10_lookup_table[*ls->pos] >= 0,
-      LUATEXTS_EBADDATA,
-      ("ltsLS_readuint10: first character is not a number\n")
-    );
-
-  /* current character is a number and we have something to read */
-  while (uint10_lookup_table[*ls->pos] >= 0)
-  {
-    /* Are we about to overflow? */
-    LUATEXTS_ENSURE(ls,
-        !(
-          (k >= 429496729) &&
-          (k != 429496729 || uint10_lookup_table[*ls->pos] > 5)
-        ),
-        LUATEXTS_ETOOHUGE,
-        ("ltsLS_readuint10: value does not fit to uint32_t\n")
-      );
-
-    k = k * 10u + uint10_lookup_table[*ls->pos];
-
-    EAT_CHAR(ls, "ltsLS_readuint10");
-  }
-
-  EAT_NEWLINE(ls, "ltsLS_readuint10");
-
-  *dest = k;
-
-  return LUATEXTS_ESUCCESS;
-}
-
-static const signed char uint16_lookup_table[256] =
+static const signed char uint_lookup_table_16[256] =
 {
 /*  0*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
 /* 16*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
@@ -515,51 +474,7 @@ static const signed char uint16_lookup_table[256] =
 /*240*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1
 };
 
-static int ltsLS_readuint16(lts_LoadState * ls, LUATEXTS_UINT * dest)
-{
-  /*
-    Not supporting leading '-' (this is unsigned int)
-    and not eating leading whitespace
-    (it is accidental that strtoul eats it,
-    luatexts format formally does not support this).
-  */
-  LUATEXTS_UINT k = 0;
-
-  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
-  {
-    ESPAM(("ltsLS_readuint16: clipped\n"));
-    return LUATEXTS_ECLIPPED;
-  }
-
-  LUATEXTS_ENSURE(ls,
-      uint16_lookup_table[*ls->pos] >= 0,
-      LUATEXTS_EBADDATA,
-      ("ltsLS_readuint16: first character is not a hex number\n")
-    );
-
-  /* current character is a number and we have something to read */
-  while (uint16_lookup_table[*ls->pos] >= 0)
-  {
-    /* Are we about to overflow? */
-    LUATEXTS_ENSURE(ls,
-        k < 0x10000000u,
-        LUATEXTS_ETOOHUGE,
-        ("ltsLS_readuint16: value does not fit to uint32_t\n")
-      );
-
-    k = k * 16u + uint16_lookup_table[*ls->pos];
-
-    EAT_CHAR(ls, "ltsLS_readuint16");
-  }
-
-  EAT_NEWLINE(ls, "ltsLS_readuint16");
-
-  *dest = k;
-
-  return LUATEXTS_ESUCCESS;
-}
-
-static const signed char uint36_lookup_table[256] =
+static const signed char uint_lookup_table_36[256] =
 {
 /*  0*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
 /* 16*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
@@ -579,52 +494,60 @@ static const signed char uint36_lookup_table[256] =
 /*240*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1
 };
 
-static int ltsLS_readuint36(lts_LoadState * ls, LUATEXTS_UINT * dest)
-{
-  /*
-    Not supporting leading '-' (this is unsigned int)
-    and not eating leading whitespace
-    (it is accidental that strtoul eats it,
-    luatexts format formally does not support this).
-  */
-  LUATEXTS_UINT k = 0;
-
-  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
-  {
-    ESPAM(("ltsLS_readuint36: clipped\n"));
-    return LUATEXTS_ECLIPPED;
+/*
+  Not supporting leading '-' (this is unsigned int)
+  and not eating leading whitespace
+  (it is accidental that strtoul eats it,
+  luatexts format formally does not support this).
+*/
+#define DECLARE_READUINT(ltsLS_readuint, BASE, LIMIT, TAIL) \
+  static int LUATEXTS_CONCAT(ltsLS_readuint, BASE)( \
+      lts_LoadState * ls, \
+      LUATEXTS_UINT * dest \
+    ) \
+  { \
+    LUATEXTS_UINT k = 0; \
+    if (LUATEXTS_UNLIKELY(!ltsLS_good(ls))) \
+    { \
+      ESPAM((LUATEXTS_STRINGIFY(LUATEXTS_CONCAT(ltsLS_readuint, BASE)) \
+        ": clipped\n")); \
+      return LUATEXTS_ECLIPPED; \
+    } \
+    LUATEXTS_ENSURE(ls, \
+        LUATEXTS_CONCAT(uint_lookup_table_, BASE)[*ls->pos] >= 0, \
+        LUATEXTS_EBADDATA, \
+        (LUATEXTS_STRINGIFY(LUATEXTS_CONCAT(ltsLS_readuint, BASE)) \
+          ": first character is not a number\n") \
+      ); \
+    while (LUATEXTS_CONCAT(uint_lookup_table_, BASE)[*ls->pos] >= 0) \
+    { \
+      LUATEXTS_ENSURE(ls, \
+          !( \
+            (k >= LIMIT) && \
+            ( \
+              k != LIMIT || \
+              LUATEXTS_CONCAT(uint_lookup_table_, BASE)[*ls->pos] > TAIL \
+            ) \
+          ), \
+          LUATEXTS_ETOOHUGE, \
+          (LUATEXTS_STRINGIFY(LUATEXTS_CONCAT(ltsLS_readuint, BASE)) \
+            ": value does not fit to uint32_t\n") \
+        ); \
+      k = k * BASE + LUATEXTS_CONCAT(uint_lookup_table_, BASE)[*ls->pos]; \
+      EAT_CHAR(ls, LUATEXTS_STRINGIFY(LUATEXTS_CONCAT(ltsLS_readuint, BASE))); \
+    } \
+    EAT_NEWLINE( \
+        ls, LUATEXTS_STRINGIFY(LUATEXTS_CONCAT(ltsLS_readuint, BASE)) \
+      ); \
+    *dest = k; \
+    return LUATEXTS_ESUCCESS; \
   }
 
-  LUATEXTS_ENSURE(ls,
-      uint36_lookup_table[*ls->pos] >= 0,
-      LUATEXTS_EBADDATA,
-      ("ltsLS_readuint36: first character is not a base36 number\n")
-    );
+DECLARE_READUINT(ltsLS_readuint, 10, 429496729,  5)
+DECLARE_READUINT(ltsLS_readuint, 16, 0xFFFFFFF,  0xF)
+DECLARE_READUINT(ltsLS_readuint, 36, 119304647,  3)
 
-  /* current character is a number and we have something to read */
-  while (uint36_lookup_table[*ls->pos] >= 0)
-  {
-    /* Are we about to overflow? */
-    LUATEXTS_ENSURE(ls,
-        !(
-          (k >= 119304647) &&
-          (k != 119304647 || uint36_lookup_table[*ls->pos] > 3)
-        ),
-        LUATEXTS_ETOOHUGE,
-        ("ltsLS_readuint36: value does not fit to uint32_t\n")
-      );
-
-    k = k * 36u + uint36_lookup_table[*ls->pos];
-
-    EAT_CHAR(ls, "ltsLS_readuint36");
-  }
-
-  EAT_NEWLINE(ls, "ltsLS_readuint36");
-
-  *dest = k;
-
-  return LUATEXTS_ESUCCESS;
-}
+#undef DECLARE_READUINT
 
 static int ltsLS_readnumber(lts_LoadState * ls, LUATEXTS_NUMBER * dest)
 {
