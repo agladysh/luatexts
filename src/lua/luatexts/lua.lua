@@ -139,19 +139,22 @@ do
       return result
     end
 
-    local readline = function(self)
+    local readpattern = function(self, pattern)
       if self.next_ > #self.str_ then
-        self:fail("load failed: readline: not enough data in buffer")
+        self:fail("load failed: readpattern: not enough data in buffer")
         return nil
       end
 
-      local start, off, result = self.str_:find("(.-)\r?\n", self.next_)
+      local start, off, result = self.str_:find(pattern, self.next_)
       if not result then
-        self:fail("load failed: readline: can't find a newline")
+        self:fail("load failed: readpattern: not found")
         return nil
       end
 
-      assert(start == self.next_)
+      if start ~= self.next_ then
+        self:fail("load failed: readpattern: garbage before pattern")
+        return nil
+      end
 
       self.next_ = off + 1
 
@@ -178,8 +181,8 @@ do
 
       return
       {
-        readline = readline;
         read = read;
+        readpattern = readpattern;
         --
         good = good;
         fail = fail;
@@ -201,7 +204,7 @@ do
 
   local number = function(base)
     return function(buf)
-      local v = buf:readline()
+      local v = buf:readpattern("(.-)\r?\n")
       if not buf:good() then
         return nil
       end
@@ -213,13 +216,24 @@ do
     end
   end
 
+  local uint_patterns =
+  {
+    [10] = "([0-9]-)\r?\n";
+    [16] = "([0-9a-fA-F]-)\r?\n";
+    [36] = "([0-9a-zA-Z]-)\r?\n";
+  }
+
   local uint = function(base)
-    local read_number = number(base)
+    local pattern = assert(uint_patterns[base])
 
     return function(buf)
-      local v = read_number(buf)
-
+      local v = buf:readpattern(pattern)
       if not buf:good() then
+        return nil
+      end
+      v = tonumber(v, base)
+      if not v then -- Should not happen
+        buf:fail("load failed: not a number")
         return nil
       end
       if v ~= v then
@@ -258,8 +272,8 @@ do
     ['1'] = invariant(true);
     ['N'] = number(10);
     ['U'] = read_uint10;
-    ['H'] = uint(16); -- TODO: Not strict enough?
-    ['Z'] = uint(36); -- TODO: Not strict enough?
+    ['H'] = uint(16);
+    ['Z'] = uint(36);
 
     ['S'] = function(buf)
       local length = read_uint10(buf)
@@ -273,13 +287,8 @@ do
       end
 
       -- Eat EOL after data
-      local empty = buf:readline()
+      local empty = buf:readpattern("()\r?\n")
       if not buf:good() then
-        return nil
-      end
-
-      if empty ~= "" then
-        buf:fail("load failed: garbage after string data")
         return nil
       end
 
@@ -346,7 +355,7 @@ do
   }
 
   read_value = function(buf)
-    local value_type = buf:readline()
+    local value_type = buf:readpattern("(.)\r?\n")
     if not buf:good() then
       return
     end
