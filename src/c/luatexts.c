@@ -438,7 +438,7 @@ static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
   */
   LUATEXTS_UINT k = 0;
 
-  if (!ltsLS_good(ls))
+  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
   {
     ESPAM(("ltsLS_readuint10: clipped\n"));
     return LUATEXTS_ECLIPPED;
@@ -678,7 +678,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
 
   int result = LUATEXTS_ESUCCESS;
 
-  if (!ltsLS_good(ls))
+  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
   {
     ESPAM(("load_value: clipped\n"));
     return LUATEXTS_ECLIPPED;
