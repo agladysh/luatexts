@@ -1315,11 +1315,15 @@ for LOAD_NAME, LOAD in pairs { C = luatexts.load, LUA = luatexts_lua.load } do
       ({
         U =
         {
-          max = '4294967295', trunc = '4294967296',
-          noneg = true, notrunc = true
+          max = '4294967295', trunc = '4294967296';
+          noneg = true, notrunc = true;
         };
-        H = { max = 'FFFFFFFF', trunc = '100000000' };
-        Z = { max = '1Z141Z3', trunc = '1Z141Z4' };
+        H =
+        {
+          max = 'FFFFFFFF', trunc = '100000000';
+          noneg = true, notrunc = (LOAD_NAME == "C");
+        };
+        Z = { max = '1Z141Z3', trunc = '1Z141Z4', noneg = (LOAD_NAME == "LUA") };
       })[BASE]
 
       local NAME = BASE .. " " .. NAME
