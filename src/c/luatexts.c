@@ -472,6 +472,70 @@ static int ltsLS_readuint10(lts_LoadState * ls, LUATEXTS_UINT * dest)
   return LUATEXTS_ESUCCESS;
 }
 
+static const signed char uint16_lookup_table[256] =
+{
+/*  0*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 16*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 32*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 48*/     0,  1,  2,  3,  4,  5,  6,  7,  8 , 9 ,-1, -1, -1, -1, -1, -1,
+/* 64*/    -1, 10, 11, 12, 13, 14, 15, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 80*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/* 96*/    -1, 10, 11, 12, 13, 14, 15, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*112*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*128*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*144*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*160*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*176*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*192*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*208*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*224*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1,
+/*240*/    -1, -1, -1, -1, -1, -1, -1, -1, -1 ,-1 ,-1, -1, -1, -1, -1, -1
+};
+
+static int ltsLS_readuint16(lts_LoadState * ls, LUATEXTS_UINT * dest)
+{
+  /*
+    Not supporting leading '-' (this is unsigned int)
+    and not eating leading whitespace
+    (it is accidental that strtoul eats it,
+    luatexts format formally does not support this).
+  */
+  LUATEXTS_UINT k = 0;
+
+  if (LUATEXTS_UNLIKELY(!ltsLS_good(ls)))
+  {
+    ESPAM(("ltsLS_readuint16: clipped\n"));
+    return LUATEXTS_ECLIPPED;
+  }
+
+  LUATEXTS_ENSURE(ls,
+      uint16_lookup_table[*ls->pos] >= 0,
+      LUATEXTS_EBADDATA,
+      ("ltsLS_readuint16: first character is not a hex number\n")
+    );
+
+  /* current character is a number and we have something to read */
+  while (uint16_lookup_table[*ls->pos] >= 0)
+  {
+    /* Are we about to overflow? */
+    LUATEXTS_ENSURE(ls,
+        k < 0x10000000u,
+        LUATEXTS_ETOOHUGE,
+        ("ltsLS_readuint16: value does not fit to uint32_t\n")
+      );
+
+    k = k * 16u + uint16_lookup_table[*ls->pos];
+
+    EAT_CHAR(ls, "ltsLS_readuint16");
+  }
+
+  EAT_NEWLINE(ls, "ltsLS_readuint16");
+
+  *dest = k;
+
+  return LUATEXTS_ESUCCESS;
+}
+
 static int ltsLS_readuint(lts_LoadState * ls, LUATEXTS_UINT * dest, int base)
 {
   size_t len = 0;
@@ -744,7 +808,7 @@ static int load_value(lua_State * L, lts_LoadState * ls)
         {
           LUATEXTS_UINT value;
 
-          result = ltsLS_readuint(ls, &value, 16);
+          result = ltsLS_readuint16(ls, &value);
           if (LUATEXTS_LIKELY(result == LUATEXTS_ESUCCESS))
           {
             /* TODO: Maybe do lua_pushinteger if value fits? */
