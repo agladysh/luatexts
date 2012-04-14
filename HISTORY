@@ -9,6 +9,7 @@ Version 0.1.4 (To be released)
 * C `load()` now handles unsigned integers up to 4294967295
 * New Lua module functions:
   * `load()`
+  * `load_from_buffer()` to read from streams
   * `save_cat()` to save to streams (files, stdout etc.)
 * UTF-8 string length is given in codepoints, not characters
 * Optimized C code, especially unsigned integer base 10

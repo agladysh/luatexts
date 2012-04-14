@@ -120,7 +120,7 @@ end
 
 --------------------------------------------------------------------------------
 
-local load
+local load, load_from_buffer
 do
   local make_read_buf
   do
@@ -369,16 +369,10 @@ do
     return reader(buf)
   end
 
-  load = function(str)
-    if type(str) ~= "string" then -- TODO: Support io.file?
-      -- Imitating C API to simplify tests
-      error(
-          "bad argument #1 to 'load' (string expected)"
-        )
-    end
-
-    local buf = make_read_buf(str)
-
+  -- TODO: Cover this with separate tests.
+  --       Most importantly, test that readpattern's pattern
+  --       always ends with '\n'
+  load_from_buffer = function(buf)
     local n = read_uint10(buf)
     if not buf:good() then
       return buf:result()
@@ -396,6 +390,19 @@ do
 
     return true, unpack(r, 1, n)
   end
+
+  load = function(str)
+    if type(str) ~= "string" then -- TODO: Support io.file?
+      -- Imitating C API to simplify tests
+      error(
+          "bad argument #1 to 'load' (string expected)"
+        )
+    end
+
+    return load_from_buffer(
+        make_read_buf(str)
+      )
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -409,4 +416,5 @@ return
   save = save;
   save_cat = save_cat;
   load = load;
+  load_from_buffer = load_from_buffer;
 }

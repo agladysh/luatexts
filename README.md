@@ -335,6 +335,53 @@ implementation of luatexts data serializer.
     Use ordinary string value data to pass UTF-8 data instead.
     (You'll need to know its size in bytes, of course.)
 
+* `luatexts_lua.load_from_buffer(buf : buffer) : true, ... / nil, err`
+
+  Returns unserialized data tuple (as multiple return values).
+  Tuples may be of zero values.
+
+  The `buffer` object must have following methods:
+
+  * `buf:read(bytes : number) : string / nil`
+
+    Reads specified number of bytes from the buffer and returns them as string.
+
+    Returns nil and sets buffer state to failed on error.
+
+  * `buf:readpattern(lua_pattern : string) : string / nil`
+
+    Reads specified Lua pattern from the buffer,
+    and returns captures.
+
+    Pattern is guaranteed to have at least one capture (including `()`
+    positional capture), and to terminate with '\n' character.
+
+    Returns `nil` and sets buffer state to failed on error
+    (including the case when pattern does not match anything,
+    or if there is any unread data in the buffer before pattern).
+
+  * `buf:good() : boolean`
+
+    Returns false if buffer state is failed, true otherwise.
+
+  * `buf:fail(error_message : string) : none`
+
+    Sets buffer state to failed with a given `error_message`.
+
+  * `buf:result() : true | nil, error_message`
+
+    Returns `true` if buffer state is good.
+    Returns `nil, error_message` if buffer state is failed.
+
+  You may find a reference implementation of `buffer` object
+  in the Lua module source code.
+
+  Issues (to be fixed in later revisions):
+
+  * Does not support loading UTF-8 string value type.
+    Use ordinary string value data to pass UTF-8 data instead.
+    (You'll need to know its size in bytes, of course.)
+
 ### JavaScript
 
 * `LUATEXTS.save(...) : string`
