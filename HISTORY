@@ -12,9 +12,10 @@ Version 0.1.4 (To be released)
   * `load_from_buffer()` to read from streams
   * `save_cat()` to save to streams (files, stdout etc.)
 * UTF-8 string length is given in codepoints, not characters
-* Optimized C code, especially unsigned integer base 10
+* Optimized C code
 * Some improvements in documentation
 * Some improvements in implementation
+* Some improvements in tests
 
 Version 0.1.3 (2011-06-03)
 ==========================
