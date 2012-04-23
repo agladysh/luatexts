@@ -1,12 +1,12 @@
 TODO:
 -----
 
- -- Add an alternative key-value size-less table format (ending by nil-nil pair).
- -- Run splint all over the code.
+ -- Deal with LuaJIT2 bug (http://thread.gmane.org/gmane.comp.lang.lua.general/89951)
+ -- Run splint all over the C code.
  -- Add a luajit.ffi implementation.
  -- luatexts.lua.save() should not throw error() or use assert().
- -- Write luatexts.lua.load()
  -- Write JS load().
  -- Run benchmarks against Luabins, JSON, XML and Lua source.
+ -- Run benchmarks against msgpack and other popular formats.
  -- Add generative and mutational tests for the UTF-8 data.
  -- Write better tests.
