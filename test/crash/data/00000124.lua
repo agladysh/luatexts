@@ -1,1 +1,0 @@
-return {inf,"luatexts","",{},3.140000000000000124344978758017532527446746826171875,{[{}]=0,["(nil)"]="luatexts",[42]="luatexts",luatexts=inf,[{}]=false},42},7

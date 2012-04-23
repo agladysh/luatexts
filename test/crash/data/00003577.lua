@@ -1,1 +1,0 @@
-return {0,-230,inf,0,inf,0,true},7

@@ -1,1 +1,0 @@
-return {723,false,true,false,42,0,true,[9]=inf,[10]=inf},10

@@ -1,1 +1,0 @@
-return {inf,[3]=42,[4]=inf,[6]=inf,[7]=inf},7

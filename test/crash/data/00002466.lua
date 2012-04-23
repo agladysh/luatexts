@@ -1,1 +1,0 @@
-return {0,{},inf,true,0,"luatexts",42,[9]=false,[10]=false},10

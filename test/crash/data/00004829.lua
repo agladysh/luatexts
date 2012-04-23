@@ -1,1 +1,0 @@
-return {0,[3]=true,[4]=inf,[5]=inf},5

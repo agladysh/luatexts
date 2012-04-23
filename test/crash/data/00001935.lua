@@ -1,1 +1,0 @@
-return {189,false,inf,734},5

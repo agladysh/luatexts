@@ -1,1 +1,0 @@
-return {{inf,[-369]=inf,[inf]=true},42,0},3

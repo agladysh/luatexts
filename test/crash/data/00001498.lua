@@ -1,1 +1,0 @@
-return {0,{},"",0,true,inf,inf},7

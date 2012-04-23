@@ -1,1 +1,0 @@
-return {inf},2

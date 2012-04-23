@@ -1,1 +1,0 @@
-return {166,inf,true,{}},4

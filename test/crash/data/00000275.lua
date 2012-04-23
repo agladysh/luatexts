@@ -1,1 +1,0 @@
-return {inf,inf,"",42,[6]="luatexts",[7]=0},7

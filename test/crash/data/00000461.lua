@@ -1,1 +1,0 @@
-return {inf,0,inf},3

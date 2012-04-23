@@ -1,1 +1,0 @@
-return {{0.707768077169402598514125202200375497341156005859375,true,inf,true,"luatexts",-942,luatexts={false,[inf]=""},[inf]=617,[false]="luatexts"},0,""},3

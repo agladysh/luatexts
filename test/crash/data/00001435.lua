@@ -1,1 +1,0 @@
-return {true,{},{0,0,inf,[{}]=inf,[-785]=inf}},3

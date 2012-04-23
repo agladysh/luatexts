@@ -1,1 +1,0 @@
-return {42,inf,false,inf},4

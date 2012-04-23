@@ -1,1 +1,0 @@
-return {0.17186580383370309021984212449751794338226318359375,false,"luatexts",true,inf,"luatexts","luatexts",inf,-489},9

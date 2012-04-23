@@ -1,1 +1,0 @@
-return {"",false,inf,0,false,{[""]=inf}},6

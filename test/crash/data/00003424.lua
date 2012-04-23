@@ -1,1 +1,0 @@
-return {true,inf,false,false,"",42,"",true,{}},10

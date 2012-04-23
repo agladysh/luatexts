@@ -1,1 +1,0 @@
-return {inf,inf,0,"",inf,{},true},7

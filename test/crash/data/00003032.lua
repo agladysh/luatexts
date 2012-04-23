@@ -1,1 +1,0 @@
-return {0,true,inf,[5]=756},5
