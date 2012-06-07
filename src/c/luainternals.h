@@ -35,6 +35,7 @@ int luaO_log2 (unsigned int x);
 * BEGIN COPY-PASTE FROM Lua 5.1.4 ltable.c
 */
 
+#ifdef LUAI_BITSINT
 /*
 ** max size of array part is 2^MAXBITS
 */
@@ -43,6 +44,19 @@ int luaO_log2 (unsigned int x);
 #else
 #define MAXBITS		(LUAI_BITSINT-2)
 #endif
+
+/*
+* END COPY-PASTE FROM Lua 5.1.4 ltable.c
+*/
+
+#else
+/* LuaJIT does not have LUAI_BITSINT defined */
+#define MAXBITS		26
+#endif
+
+/*
+* BEGIN COPY-PASTE FROM Lua 5.1.4 ltable.c
+*/
 
 #define MAXASIZE	(1 << MAXBITS)
 
