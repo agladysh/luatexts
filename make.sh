@@ -20,7 +20,7 @@ gcc -xc++ -O2 -fPIC -I/usr/include/lua5.1 -c src/c/luatexts.c -o /dev/null -Isrc
 echo "----> Making rock"
 sudo luarocks make rockspec/luatexts-scm-1.rockspec
 
-HEADER='// LUATEXTS JavaScript module (v. 0.1.4)
+HEADER='// LUATEXTS JavaScript module (v. 0.1.5)
 // https://github.com/agladysh/luatexts/
 // Copyright (c) LUATEXTS authors. Licensed under the terms of the MIT license:
 // https://github.com/agladysh/luatexts/tree/master/COPYRIGHT
