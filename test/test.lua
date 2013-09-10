@@ -1321,12 +1321,12 @@ for LOAD_NAME, LOAD in pairs { C = luatexts.load, LUA = luatexts_lua.load } do
         H =
         {
           max = 'FFFFFFFF', trunc = '100000000';
-          noneg = true, notrunc = (LOAD_NAME == "C");
+          noneg = true, notrunc = true;
         };
         Z =
         {
           max = '1Z141Z3', trunc = '1Z141Z4';
-          noneg = true, notrunc = (LOAD_NAME == "C");
+          noneg = true, notrunc = true;
         };
       })[BASE]
 
