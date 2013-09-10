@@ -266,6 +266,101 @@ do
 
   local read_uint10 = uint(10)
 
+  local read_utf8
+  do
+    -- Based on MIT-licensed Flexible and Economical UTF-8 Decoder
+    -- by Bjoern Hoehrmann <bjoern@hoehrmann.de>
+    -- http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+
+    local UTF8_ACCEPT = 0
+    local UTF8_REJECT = 1
+
+    local utf8d =
+    {
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, -- 00..1f
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, -- 20..3f
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, -- 40..5f
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, -- 60..7f
+      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9, -- 80..9f
+      7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7, -- a0..bf
+      8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, -- c0..df
+      0xa,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x4,0x3,0x3, -- e0..ef
+      0xb,0x6,0x6,0x6,0x5,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8, -- f0..ff
+      0x0,0x1,0x2,0x3,0x5,0x8,0x7,0x1,0x1,0x1,0x4,0x6,0x1,0x1,0x1,0x1, -- s0..s0
+      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1, -- s1..s2
+      1,2,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1, -- s3..s4
+      1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,3,1,1,1,1,1,1, -- s5..s6
+      1,3,1,1,1,1,1,3,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1, -- s7..s8
+    }
+
+    -- Note: Keeping code as close to the C original as possible.
+    --       Thus the magic numbers without constants.
+    local decode = function(state, codep, byte)
+      local byte_type = utf8d[byte + 1]
+
+      codep = (state ~= UTF8_ACCEPT)
+        and
+        (
+          bit_bor(
+              bit_band(byte, 0x3f),
+              bit_lshift(codep, 6)
+            )
+        )
+        or
+        (
+          bit_band(
+              bit_rshift(0xff, byte_type),
+              byte
+            )
+        )
+
+      return utf8d[256 + state * 16 + byte_type + 1], codep
+    end
+
+    read_utf8 = function(buf)
+      local length = read_uint10(buf)
+      if not buf:good() then
+        return nil
+      end
+
+      local result
+      if length == 0 then
+        result = ""
+      else
+        result = { }
+
+        local codepoint = 0
+        local state = UTF8_ACCEPT
+        while length > 0 do
+          local char = buf:read(1)
+          if not buf:good() then
+            return nil
+          end
+
+          result[#result + 1] = char
+
+          state, codepoint = decode(state, codepoint, char:byte())
+          if state == UTF8_ACCEPT then
+            length = length - 1
+          elseif state == UTF8_REJECT then
+            buf:fail("load failed: invalid utf-8 data")
+            return nil
+          end
+        end
+
+        result = table_concat(result)
+      end
+
+      -- Eat EOL after data
+      buf:readpattern("()\r?\n")
+      if not buf:good() then
+        return nil
+      end
+
+      return result
+    end
+  end
+
   local unsupported = function(buf)
     buf:fail("load failed: unsupported value type")
   end
@@ -302,7 +397,7 @@ do
       return v
     end;
 
-    ['8'] = unsupported; -- TODO: Support utf8
+    ['8'] = read_utf8;
 
     ['T'] = function(buf)
       local array_size = read_uint10(buf)
