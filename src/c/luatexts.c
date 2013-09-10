@@ -64,7 +64,7 @@ extern "C" {
 #endif
 
 #define LUATEXTS_VERSION     "luatexts 0.1.5"
-#define LUATEXTS_COPYRIGHT   "Copyright (C) 2011-2012, luatexts authors"
+#define LUATEXTS_COPYRIGHT   "Copyright (C) 2011-2013, luatexts authors"
 #define LUATEXTS_DESCRIPTION \
     "Trivial Lua human-readable binary-safe serialization library"
 

@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- luatexts/lua.lua: plain Lua implementation of luatexts
 --------------------------------------------------------------------------------
--- Copyright (c) 2011-2012, luatexts authors
+-- Copyright (c) 2011-2013, luatexts authors
 -- See license in the file named COPYRIGHT
 --------------------------------------------------------------------------------
 
@@ -10,6 +10,13 @@ local assert, error, pairs, select, type
 
 local table_concat
     = table.concat
+
+--------------------------------------------------------------------------------
+
+local bit = require 'bit'
+
+local bit_band, bit_bor, bit_lshift, bit_rshift
+    = bit.band, bit.bor, bit.lshift, bit.rshift
 
 --------------------------------------------------------------------------------
 
@@ -410,7 +417,7 @@ end
 return
 {
   _VERSION = "luatexts-lua 0.1.5";
-  _COPYRIGHT = "Copyright (C) 2011-2012, luatexts authors";
+  _COPYRIGHT = "Copyright (C) 2011-2013, luatexts authors";
   _DESCRIPTION = "Trivial Lua human-readable binary-safe serialization library";
   --
   save = save;
